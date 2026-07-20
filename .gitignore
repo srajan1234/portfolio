@@ -1,0 +1,6 @@
+# Keep the résumé (personal phone) out of the public repo — local only
+resume.pdf
+
+.DS_Store
+node_modules/
+*.log
