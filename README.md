@@ -24,7 +24,7 @@ built, not a copy-paste of the implementation. Two entries (**IAG Cargo Portal**
 case studies** of proprietary work — architecture and design only, with internal identifiers, credentials, and
 infrastructure details deliberately omitted.
 
-> 🔗 **Live interactive portfolio:** https://claude.ai/code/artifact/c177d054-120e-4ef4-9f44-a3947b71ef0f
+> 🔗 **Live portfolio site:** **https://srajan1234.github.io/portfolio/**
 
 ---
 
