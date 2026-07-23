@@ -147,6 +147,51 @@
   footer { border-top: 1px solid var(--line); padding: 30px 0 46px; }
   .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-family: var(--mono); font-size: .74rem; color: var(--muted); }
 
+  /* project cards */
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 920px){ .card-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px){ .card-grid { grid-template-columns: 1fr; } }
+  .pcard { position: relative; text-align: left; cursor: pointer; overflow: hidden; font-family: var(--sans);
+    border: 1px solid var(--line); border-radius: 18px; padding: 22px; min-height: 216px; background: var(--elev); color: var(--text);
+    display: flex; flex-direction: column; transition: transform .28s cubic-bezier(.2,.7,.2,1), border-color .28s, box-shadow .28s; }
+  .pcard::before { content:""; position:absolute; inset:0; z-index:0; opacity:.15; transition:opacity .3s;
+    background: radial-gradient(120% 92% at 100% 0%, var(--c1), transparent 58%), radial-gradient(120% 92% at 0% 100%, var(--c2), transparent 60%); }
+  .pcard:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--c1) 60%, var(--line2)); box-shadow: 0 22px 54px rgba(0,0,0,.5); }
+  .pcard:hover::before { opacity: .36; }
+  .pcard .emoji { position:absolute; right: 8px; bottom: 0; font-size: 4.6rem; opacity: .12; z-index:0; pointer-events:none; }
+  .pcard > * { position: relative; z-index: 1; }
+  .pcard .ptop { display:flex; align-items:center; gap:8px; }
+  .pcard .pcat { font-family: var(--mono); font-size:.61rem; letter-spacing:.08em; text-transform:uppercase; color: var(--dim); }
+  .pbadge { font-family: var(--mono); font-size:.55rem; letter-spacing:.05em; text-transform:uppercase; padding:3px 8px; border-radius:999px; border:1px solid var(--line2); color: var(--text); white-space:nowrap; }
+  .pcard .ptop .pbadge { margin-left:auto; }
+  .pcard h3 { font-size: 1.5rem; letter-spacing:-.02em; text-transform: uppercase; font-weight:750; margin: 20px 0 8px; }
+  .pcard .phook { font-size:.85rem; color: var(--dim); margin-bottom: 14px; }
+  .pcard .pfoot { display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
+  .pcard .ptech { font-family:var(--mono); font-size:.65rem; color: var(--muted); }
+  .pcard .arr { font-size:1.15rem; transition: transform .2s; }
+  .pcard:hover .arr { transform: translate(3px,-3px); }
+
+  /* modal */
+  .modal-ov { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 22px;
+    background: rgba(5,5,7,.74); backdrop-filter: blur(7px); opacity: 0; transition: opacity .25s; }
+  .modal-ov.open { display: flex; opacity: 1; }
+  .modal { position: relative; width: min(780px, 100%); max-height: 88vh; overflow-y: auto; border-radius: 20px;
+    background: var(--elev2); border: 1px solid var(--line2); transform: translateY(16px) scale(.98); transition: transform .28s cubic-bezier(.2,.7,.2,1); }
+  .modal-ov.open .modal { transform: none; }
+  .modal-hd { position: relative; padding: 32px 30px 24px; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .modal-hd::before { content:""; position:absolute; inset:0; opacity:.30;
+    background: radial-gradient(120% 130% at 100% 0%, var(--c1), transparent 58%), radial-gradient(120% 130% at 0% 100%, var(--c2), transparent 60%); }
+  .modal-hd .emoji { position:absolute; right:20px; top:14px; font-size:3.6rem; opacity:.28; }
+  .modal-hd > * { position: relative; }
+  .modal-hd .pcat { font-family:var(--mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color: var(--dim); }
+  .modal-hd h3 { font-size: clamp(1.7rem, 5vw, 2.3rem); text-transform: uppercase; letter-spacing:-.02em; margin-top:10px; }
+  .modal-bd { padding: 24px 30px 32px; }
+  .modal-bd .md-desc { color: var(--dim); margin-bottom: 14px; font-size: 1.02rem; }
+  .modal-bd .chips { margin-bottom: 4px; }
+  .modal-close { position: absolute; top: 15px; right: 15px; z-index: 3; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); background: rgba(0,0,0,.4); color: var(--text); font-size: .95rem; cursor: pointer; display: grid; place-items: center; transition: background .2s; }
+  .modal-close:hover { background: rgba(0,0,0,.7); }
+  body.noscroll { overflow: hidden; }
+
   @media (prefers-reduced-motion: reduce){
     html { scroll-behavior: auto; }
     .reveal { opacity: 1; transform: none; transition: none; }
@@ -203,8 +248,8 @@
 
   <section id="work">
     <div class="wrap">
-      <div class="sec-head reveal"><h2>Selected Work</h2><span class="lbl">09 systems · full design docs</span></div>
-      <div id="projList"></div>
+      <div class="sec-head reveal"><h2>Selected Work</h2><span class="lbl">09 systems · tap a card for details</span></div>
+      <div class="card-grid" id="cardGrid"></div>
     </div>
   </section>
 
@@ -235,6 +280,8 @@
     </div>
   </section>
 </main>
+
+<div class="modal-ov" id="modalOv"><div id="modalRoot"></div></div>
 
 <footer><div class="wrap foot"><span>© 2026 Kumar Srajan</span><span>Backend &amp; Distributed Systems Engineer</span></div></footer>
 
@@ -319,20 +366,55 @@
 
   function schematic(a){ var t=""; a.forEach(function(x,i){ if(i>0) t+='<div class="tier-conn"><span></span></div>'; var n=x.n.map(function(nn){return '<span class="snode'+(i===0?" acc":"")+'">'+nn+'</span>';}).join(""); t+='<div><div class="tier-label">'+x.l+'</div><div class="tier-nodes">'+n+'</div></div>'; }); return '<div class="schematic"><div class="sch-cap">// high-level architecture</div>'+t+'</div>'; }
 
-  var pl=document.getElementById("projList");
+  var themes = {
+    "iag-cargo-portal":{c1:"#38bdf8",c2:"#6366f1",icon:"✈️"},
+    "retaint":{c1:"#f472b6",c2:"#fb923c",icon:"📣"},
+    "vibe":{c1:"#a78bfa",c2:"#22d3ee",icon:"🧠"},
+    "linder":{c1:"#fb7185",c2:"#f43f5e",icon:"🤝"},
+    "influencehub":{c1:"#c084fc",c2:"#f0abfc",icon:"📸"},
+    "cartag":{c1:"#fbbf24",c2:"#f59e0b",icon:"🚗"},
+    "snapads-pro":{c1:"#facc15",c2:"#f0b429",icon:"👻"},
+    "inhousegames":{c1:"#f87171",c2:"#a855f7",icon:"🎲"},
+    "trading-assistant":{c1:"#34d399",c2:"#059669",icon:"📈"}
+  };
+  function strip(h){ return h.replace(/<[^>]*>/g,""); }
+
+  var grid=document.getElementById("cardGrid");
   projects.forEach(function(p,i){
-    var chips=p.chips.map(function(s){return '<span class="chip">'+s+'</span>';}).join("");
-    var badge=p.badge?'<span class="badge">'+p.badge+'</span>':"";
-    var note=p.caseStudy?'<p class="note">Sanitized case study — internal identifiers &amp; credentials omitted.</p>':"";
-    var links='<div class="plinks"><a href="'+REPO+p.slug+'" target="_blank" rel="noopener">design docs ↗</a><a href="'+REPO+p.slug+'/HLD.md" target="_blank" rel="noopener">HLD</a><a href="'+REPO+p.slug+'/LLD.md" target="_blank" rel="noopener">LLD</a><a href="'+REPO+p.slug+'/FLOWS.md" target="_blank" rel="noopener">flows</a></div>';
-    var idx=(i+1<10?"0":"")+(i+1);
-    pl.appendChild(elc(
-      '<article class="proj reveal">'+
-        '<div class="proj-head"><span class="proj-idx">'+idx+'</span><h3>'+p.name+'</h3>'+badge+'<span class="proj-cat">'+p.cat+'</span></div>'+
-        '<div class="proj-body"><div><p class="proj-desc">'+p.desc+'</p><p class="proj-hl">'+p.hl+'</p><div class="chips">'+chips+'</div>'+links+note+'</div>'+schematic(p.arch)+'</div>'+
-      '</article>'
-    ));
+    var t=themes[p.slug]||{c1:"#8a8a8a",c2:"#555",icon:"◆"};
+    var badge=p.badge?'<span class="pbadge">'+p.badge+'</span>':"";
+    var card=elc(
+      '<button class="pcard reveal" style="--c1:'+t.c1+';--c2:'+t.c2+'">'+
+        '<span class="emoji">'+t.icon+'</span>'+
+        '<div class="ptop"><span class="pcat">'+p.cat+'</span>'+badge+'</div>'+
+        '<h3>'+p.name+'</h3>'+
+        '<p class="phook">'+strip(p.hl)+'</p>'+
+        '<div class="pfoot"><span class="ptech">'+p.chips.slice(0,3).join(" · ")+'</span><span class="arr">→</span></div>'+
+      '</button>'
+    );
+    card.addEventListener("click", function(){ openModal(i); });
+    grid.appendChild(card);
   });
+
+  var ov=document.getElementById("modalOv"), mroot=document.getElementById("modalRoot");
+  function openModal(i){
+    var p=projects[i], t=themes[p.slug]||{c1:"#8a8a8a",c2:"#555",icon:"◆"};
+    var chips=p.chips.map(function(s){return '<span class="chip">'+s+'</span>';}).join("");
+    var badge=p.badge?'<span class="pbadge">'+p.badge+'</span>':"";
+    var note=p.caseStudy?'<p class="note">Sanitized case study — internal identifiers &amp; credentials omitted.</p>':"";
+    var links='<div class="plinks" style="margin-top:18px"><a href="'+REPO+p.slug+'" target="_blank" rel="noopener">full design docs ↗</a><a href="'+REPO+p.slug+'/HLD.md" target="_blank" rel="noopener">HLD</a><a href="'+REPO+p.slug+'/LLD.md" target="_blank" rel="noopener">LLD</a><a href="'+REPO+p.slug+'/FLOWS.md" target="_blank" rel="noopener">flows</a></div>';
+    mroot.innerHTML='<div class="modal" style="--c1:'+t.c1+';--c2:'+t.c2+'">'+
+      '<button class="modal-close" aria-label="Close">✕</button>'+
+      '<div class="modal-hd"><span class="emoji">'+t.icon+'</span><span class="pcat">'+p.cat+'</span> '+badge+'<h3>'+p.name+'</h3></div>'+
+      '<div class="modal-bd"><p class="md-desc">'+p.desc+'</p><p class="proj-hl">'+p.hl+'</p><div class="chips">'+chips+'</div>'+schematic(p.arch)+links+note+'</div>'+
+    '</div>';
+    ov.classList.add("open"); document.body.classList.add("noscroll");
+    mroot.querySelector(".modal-close").addEventListener("click", closeModal);
+    mroot.querySelector(".modal").addEventListener("click", function(e){ e.stopPropagation(); });
+  }
+  function closeModal(){ ov.classList.remove("open"); document.body.classList.remove("noscroll"); }
+  ov.addEventListener("click", closeModal);
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeModal(); });
 
   var sg=document.getElementById("skillGrid");
   skills.forEach(function(s){ sg.appendChild(elc('<div class="skill-cat"><h4>'+s.cat+'</h4><div class="row">'+s.items.map(function(i){return '<span>'+i+'</span>';}).join("")+'</div></div>')); });
