@@ -187,6 +187,32 @@
   .modal-close:hover { background: rgba(0,0,0,.7); }
   body.noscroll { overflow: hidden; }
 
+  /* --- mobile: prevent horizontal overflow (grid/flex min-width:auto) --- */
+  .stats > *, .about > *, .card-grid > *, .skills-grid > *, .exp > *, .proj-body > *,
+  .hero-top .who, .sec-head > *, .nav-in > * { min-width: 0; }
+  .lead, .about p, .pcard .phook, .md-desc, .exp p, .proj-hl, .stat .k, .who { overflow-wrap: anywhere; }
+  .pcard .ptop { flex-wrap: wrap; }
+
+  @media (max-width: 640px) {
+    .brand span { display: none; }
+    section { padding: 70px 0; }
+    h1.giant { font-size: clamp(2.9rem, 13.5vw, 5rem); margin-bottom: 24px; }
+    .lead { font-size: 1.05rem; }
+    .hero { padding: 60px 0 40px; }
+    .hero-top .who { font-size: .76rem; }
+    .stat { padding: 22px 6px 20px 0; }
+    .stat .n { font-size: clamp(2rem, 11vw, 2.6rem); }
+    .about { margin-top: 44px !important; }
+    .sec-head { margin-bottom: 38px; }
+    .sec-head h2 { font-size: 2.1rem; }
+    .pcard h3 { font-size: 1.35rem; }
+    .modal-ov { padding: 12px; }
+    .modal-hd { padding: 26px 20px 20px; }
+    .modal-hd h3 { font-size: 1.55rem; }
+    .modal-bd { padding: 20px 20px 26px; }
+    .contact { padding: 84px 0; }
+  }
+
   @media (prefers-reduced-motion: reduce){
     html { scroll-behavior: auto; }
     .reveal { opacity: 1; transform: none; transition: none; }
