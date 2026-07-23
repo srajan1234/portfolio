@@ -36,9 +36,13 @@
   .hero-top { display: flex; align-items: center; gap: 16px; margin-bottom: 40px; }
   .avatar { width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center; position: relative; flex: none;
     background: radial-gradient(120% 120% at 30% 20%, #26262b, #0e0e10); border: 1px solid var(--line2); }
-  .avatar .mono { font: 800 1.35rem/1 var(--sans); letter-spacing: .5px; color: var(--text); }
-  .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-  .avatar .st { position: absolute; right: 0; bottom: 2px; width: 13px; height: 13px; border-radius: 50%; background: var(--live); border: 2.5px solid var(--bg); }
+  .avatar .mono { font: 800 1.35rem/1 var(--sans); letter-spacing: .5px; color: var(--text); z-index: 0; }
+  .avatar img.ava-img { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; z-index: 1; }
+  .avatar .st { position: absolute; right: 0; bottom: 2px; width: 13px; height: 13px; border-radius: 50%; background: var(--live); border: 2.5px solid var(--bg); z-index: 2; }
+  .avatar.pop { animation: avatarPop .8s cubic-bezier(.2,.85,.3,1) .12s both; }
+  .avatar.pop::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--live); opacity: 0; animation: avatarRing 1.1s ease-out .55s 1 both; pointer-events: none; }
+  @keyframes avatarPop { 0% { transform: scale(.2); opacity: 0; } 55% { transform: scale(1.14); opacity: 1; } 78% { transform: scale(.95); } 100% { transform: scale(1); } }
+  @keyframes avatarRing { 0% { transform: scale(.85); opacity: .55; } 100% { transform: scale(1.7); opacity: 0; } }
   .hero-top .who { font-family: var(--mono); font-size: .82rem; color: var(--dim); line-height: 1.5; }
   .hero-top .who b { color: var(--text); font-weight: 600; }
 
@@ -217,6 +221,8 @@
     html { scroll-behavior: auto; }
     .reveal { opacity: 1; transform: none; transition: none; }
     .track, .liveblip { animation: none !important; }
+    .avatar.pop { animation: none !important; }
+    .avatar.pop::after { display: none; }
     * { transition: none !important; }
   }
 </style>
@@ -235,7 +241,7 @@
   <section class="hero">
     <div class="wrap">
       <div class="hero-top">
-        <div class="avatar" id="avatar"><span class="mono">KS</span><span class="st"></span></div>
+        <div class="avatar pop" id="avatar"><img class="ava-img" src="avatar.jpg" alt="Kumar Srajan" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='avatar.png';}else{this.remove();}"><span class="mono">KS</span><span class="st"></span></div>
         <div class="who"><b>Kumar Srajan</b><br>Senior Software Engineer · Noida, India</div>
       </div>
       <h1 class="giant">Backend<br><span class="out">Engineer</span><span class="star">✦</span></h1>
