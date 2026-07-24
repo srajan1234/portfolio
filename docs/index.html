@@ -471,7 +471,7 @@
     if(sub){
       var full=base?base+sub+"/":"", host=base?base.replace(/^https?:\/\//,""):"";
       var view=base
-        ? '<iframe src="'+full+'" title="'+p.name+' live" loading="lazy" referrerpolicy="no-referrer"></iframe>'
+        ? '<iframe src="'+full+'" title="'+p.name+' live" loading="lazy"></iframe>'
         : '<div class="browser-off"><div class="boff-ico">'+t.icon+'</div><div><b>Live preview on request</b><br><span>run this app in the hub &amp; connect your tunnel</span></div><span class="set" onclick="setDemoBase()">connect live demo →</span></div>';
       var pop=base?'<a class="pop" href="'+full+'" target="_blank" rel="noopener">open ↗</a>':'<span class="pop set" onclick="setDemoBase()">connect</span>';
       var browser='<div class="browser"><div class="browser-bar"><span class="bdot r"></span><span class="bdot y"></span><span class="bdot g"></span><span class="burl">'+(base?host+sub:"not connected")+'</span>'+pop+'</div><div class="browser-view">'+view+'</div></div>';
