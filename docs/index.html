@@ -450,6 +450,7 @@
 
   var ov=document.getElementById("modalOv"), mroot=document.getElementById("modalRoot"), currentIdx=null;
   var demo={ "trading-assistant":"/trading","vibe":"/vibe","retaint":"/retaint","influencehub":"/influencehub","cartag":"/cartag","snapads-pro":"/snapads","inhousegames":"/games" };
+  var DEFAULT_DEMO="https://willetta-arachidic-nonobstructively.ngrok-free.dev";
   window.setDemoBase=function(){
     var cur=localStorage.getItem("demoBase")||"";
     var v=prompt("Paste your hub's public URL (ngrok / Cloudflare Tunnel), e.g. https://abc123.ngrok-free.app\n\nLeave blank to disconnect.", cur);
@@ -466,7 +467,7 @@
     var note=p.caseStudy?'<p class="note">Sanitized case study — internal identifiers &amp; credentials omitted.</p>':"";
     var links='<div class="plinks" style="margin-top:18px"><a href="'+REPO+p.slug+'" target="_blank" rel="noopener">full design docs ↗</a><a href="'+REPO+p.slug+'/HLD.md" target="_blank" rel="noopener">HLD</a><a href="'+REPO+p.slug+'/LLD.md" target="_blank" rel="noopener">LLD</a><a href="'+REPO+p.slug+'/FLOWS.md" target="_blank" rel="noopener">flows</a></div>';
     var details='<p class="md-desc">'+p.desc+'</p><p class="proj-hl">'+p.hl+'</p><div class="chips">'+chips+'</div>'+schematic(p.arch)+links+note;
-    var sub=demo[p.slug], base=(localStorage.getItem("demoBase")||"").replace(/\/+$/,""), body, liveTag="";
+    var sub=demo[p.slug], base=(localStorage.getItem("demoBase")||DEFAULT_DEMO).replace(/\/+$/,""), body, liveTag="";
     if(sub){
       var full=base?base+sub+"/":"", host=base?base.replace(/^https?:\/\//,""):"";
       var view=base
