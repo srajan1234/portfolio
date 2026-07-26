@@ -214,6 +214,31 @@
   .browser-off .boff-ico { font-size: 2.6rem; opacity: .55; }
   .browser-off b { color: var(--dim); } .browser-off span { color: var(--muted); font-size: .82rem; }
   .browser-off .set, .browser-bar .set { color: #7fd6ff; cursor: pointer; font-family: var(--mono); font-size: .8rem; border-bottom: 1px solid; }
+  .browser-off .wa-demo { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: .82rem; font-weight: 600;
+    color: #041b10; background: #25D366; border-radius: 999px; padding: 11px 20px; text-decoration: none;
+    box-shadow: 0 6px 22px rgba(37,211,102,.4); transition: transform .18s, box-shadow .25s; animation: waPulse 1.9s ease-in-out infinite; }
+  .browser-off .wa-demo:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(37,211,102,.55); }
+  @keyframes waPulse { 0%,100% { box-shadow: 0 6px 22px rgba(37,211,102,.35); } 50% { box-shadow: 0 6px 30px rgba(37,211,102,.7); } }
+  .browser-off .or { font-family: var(--mono); font-size: .68rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+
+  /* doc links — prominent pill buttons that flash on modal open */
+  .plinks { flex-wrap: wrap; }
+  .plinks a { border: 1px solid var(--line2); border-radius: 999px; padding: 7px 15px; color: var(--dim); }
+  .plinks a.doc-main { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
+  .plinks a:hover { color: var(--text); border-color: var(--live); border-bottom-color: var(--live); background: color-mix(in srgb, var(--live) 12%, transparent); }
+  .plinks a.doc-main:hover { color: var(--bg); background: var(--text); }
+  .plinks.flash a { animation: docFlash 1s ease-out both; }
+  .plinks.flash a:nth-child(2){ animation-delay: .12s; } .plinks.flash a:nth-child(3){ animation-delay: .24s; }
+  .plinks.flash a:nth-child(4){ animation-delay: .36s; }
+  @keyframes docFlash {
+    0% { box-shadow: 0 0 0 0 rgba(120,224,166,0); }
+    30% { box-shadow: 0 0 0 4px rgba(120,224,166,.45); border-color: var(--live); transform: translateY(-2px); }
+    100% { box-shadow: 0 0 0 0 rgba(120,224,166,0); transform: none; }
+  }
+  .plinks-hint { font-family: var(--mono); font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; color: var(--live); margin: 18px 0 8px; display: flex; align-items: center; gap: 7px; }
+  .plinks-hint::before { content: "▾"; animation: hintBob 1.4s ease-in-out infinite; }
+  @keyframes hintBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+  @media (prefers-reduced-motion: reduce){ .plinks.flash a, .browser-off .wa-demo, .plinks-hint::before { animation: none !important; } }
   body.noscroll { overflow: hidden; }
 
   /* --- mobile: prevent horizontal overflow (grid/flex min-width:auto) --- */
@@ -702,7 +727,7 @@
 
   var ov=document.getElementById("modalOv"), mroot=document.getElementById("modalRoot"), currentIdx=null;
   var demo={ "trading-assistant":"/trading","vibe":"/vibe","retaint":"/retaint","influencehub":"/influencehub","cartag":"/cartag","snapads-pro":"/snapads","inhousegames":"/games" };
-  var DEFAULT_DEMO="https://merger-handmade-pointing-mat.trycloudflare.com";
+  var DEFAULT_DEMO=""; // empty → embeds show the "request live demo" WhatsApp screen; paste a tunnel URL via "connect" to go live
   window.setDemoBase=function(){
     var cur=localStorage.getItem("demoBase")||"";
     var v=prompt("Paste your hub's public URL (ngrok / Cloudflare Tunnel), e.g. https://abc123.ngrok-free.app\n\nLeave blank to disconnect.", cur);
@@ -717,14 +742,15 @@
     var chips=p.chips.map(function(s){return '<span class="chip">'+s+'</span>';}).join("");
     var badge=p.badge?'<span class="pbadge">'+p.badge+'</span>':"";
     var note=p.caseStudy?'<p class="note">Sanitized case study — internal identifiers &amp; credentials omitted.</p>':"";
-    var links='<div class="plinks" style="margin-top:18px"><a href="'+REPO+p.slug+'" target="_blank" rel="noopener">full design docs ↗</a><a href="'+REPO+p.slug+'/HLD.md" target="_blank" rel="noopener">HLD</a><a href="'+REPO+p.slug+'/LLD.md" target="_blank" rel="noopener">LLD</a><a href="'+REPO+p.slug+'/FLOWS.md" target="_blank" rel="noopener">flows</a></div>';
+    var links='<div class="plinks-hint">dive into the design</div><div class="plinks flash" id="docLinks" style="margin-top:0"><a class="doc-main" href="'+REPO+p.slug+'" target="_blank" rel="noopener">full design docs ↗</a><a href="'+REPO+p.slug+'/HLD.md" target="_blank" rel="noopener">HLD</a><a href="'+REPO+p.slug+'/LLD.md" target="_blank" rel="noopener">LLD</a><a href="'+REPO+p.slug+'/FLOWS.md" target="_blank" rel="noopener">flows</a></div>';
     var details='<p class="md-desc">'+p.desc+'</p><p class="proj-hl">'+p.hl+'</p><div class="chips">'+chips+'</div>'+schematic(p.arch)+links+note;
     var sub=demo[p.slug], base=(localStorage.getItem("demoBase")||DEFAULT_DEMO).replace(/\/+$/,""), body, liveTag="";
     if(sub){
       var full=base?base+sub+"/":"", host=base?base.replace(/^https?:\/\//,""):"";
+      var waDemo="https://wa.me/919506301217?text="+encodeURIComponent("Hi Kumar, I'm on your portfolio and I'd love to see the "+p.name+" demo running live — could you spin it up?");
       var view=base
         ? '<iframe src="'+full+'" title="'+p.name+' live" loading="lazy"></iframe>'
-        : '<div class="browser-off"><div class="boff-ico">'+t.icon+'</div><div><b>Live preview on request</b><br><span>run this app in the hub &amp; connect your tunnel</span></div><span class="set" onclick="setDemoBase()">connect live demo →</span></div>';
+        : '<div class="browser-off"><div class="boff-ico">'+t.icon+'</div><div><b>Demos aren\'t live right now</b><br><span>ping me on WhatsApp and I\'ll spin up '+p.name+' for you in a minute</span></div><a class="wa-demo" href="'+waDemo+'" target="_blank" rel="noopener">▶ Request live demo</a><span class="or">— or —</span><span class="set" onclick="setDemoBase()">connect a tunnel URL →</span></div>';
       var pop=base?'<a class="pop" href="'+full+'" target="_blank" rel="noopener">open ↗</a>':'<span class="pop set" onclick="setDemoBase()">connect</span>';
       var browser='<div class="browser"><div class="browser-bar"><span class="bdot r"></span><span class="bdot y"></span><span class="bdot g"></span><span class="burl">'+(base?host+sub:"not connected")+'</span>'+pop+'</div><div class="browser-view">'+view+'</div></div>';
       liveTag=base?'<span class="live-tag on">● live</span>':'<span class="live-tag off">demo on request</span>';
