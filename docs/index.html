@@ -250,10 +250,145 @@
     .avatar.pop::after { display: none; }
     * { transition: none !important; }
   }
+
+  /* ===== intro: the portfolio writes itself ===== */
+  .pf-intro { position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column;
+    align-items: center; justify-content: space-between;
+    padding: clamp(46px,10vh,120px) 20px clamp(20px,5vh,56px);
+    background: radial-gradient(130% 120% at 50% 16%, #141416 0%, #08080a 62%);
+    transition: opacity .7s ease, transform .85s cubic-bezier(.7,0,.2,1); }
+  .pf-intro.done { opacity: 0; transform: translateY(-44px) scale(1.03); pointer-events: none; }
+  body.pf-intro-active { overflow: hidden; }
+
+  .pf-stage { flex: 1; width: min(940px,92vw); display: flex; flex-direction: column;
+    justify-content: flex-start; gap: clamp(12px,2.4vh,26px); padding-top: clamp(10px,4vh,50px); }
+  .pf-title { font-family: var(--sans); font-weight: 800; line-height: .92; letter-spacing: -.025em;
+    font-size: clamp(2.7rem,11.5vw,7.2rem); color: var(--text); min-height: 1.85em; text-wrap: balance; }
+  .pf-sub { font-family: var(--mono); font-size: clamp(.85rem,3vw,1.3rem); color: var(--dim);
+    min-height: 1.4em; letter-spacing: .01em; }
+  .pf-sub + .pf-sub { color: var(--muted); }
+  .pf-cursor { display: inline-block; width: .5ch; height: 1em; background: var(--live);
+    vertical-align: -.12em; margin-left: .05em; box-shadow: 0 0 10px var(--live);
+    animation: pfBlink 1s steps(1) infinite; }
+  @keyframes pfBlink { 50% { opacity: 0; } }
+
+  .pf-kbd { position: relative; display: flex; flex-direction: column; gap: clamp(5px,.9vw,10px);
+    padding: clamp(14px,2.3vw,24px) clamp(14px,2.3vw,24px) clamp(18px,2.7vw,30px);
+    border-radius: clamp(14px,2vw,22px); flex: none;
+    background: linear-gradient(180deg,#26262b 0%,#1a1a1e 7%,#131315 55%,#0f0f11 100%);
+    border: 1px solid rgba(255,255,255,.07);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 10px rgba(0,0,0,.6),
+      0 3px 0 #0c0c0e, 0 6px 0 #090909, 0 9px 0 #060607, 0 12px 0 #030304,
+      0 40px 70px -26px rgba(0,0,0,.9);
+    transform: perspective(1300px) rotateX(26deg); transform-origin: center bottom;
+    animation: pfKbdIn 1s cubic-bezier(.22,.9,.3,1) both; }
+  .pf-kbd::after { content: ""; position: absolute; left: 5%; right: 5%; bottom: -12px; height: 40px; z-index: -1;
+    border-radius: 44px; filter: blur(22px); opacity: .45;
+    background: linear-gradient(90deg,#78E0A6,#8fb7ff,#e2a6ff,#ffd27a,#78E0A6);
+    background-size: 220% 100%; animation: pfRgb 7s linear infinite; }
+  @keyframes pfRgb { to { background-position: 220% 0; } }
+  @keyframes pfKbdIn { from { opacity: 0; transform: perspective(1300px) rotateX(26deg) translateY(50px); } }
+  .pf-kbd-row { display: flex; gap: clamp(5px,.9vw,10px); justify-content: center; }
+  .pf-key { --k: clamp(24px,4.3vw,50px); position: relative; width: var(--k); height: var(--k);
+    border-radius: calc(var(--k)*.2); display: grid; place-items: center;
+    font-family: var(--mono); font-size: calc(var(--k)*.32); font-weight: 600;
+    color: #9b9b93; text-shadow: 0 1px 0 rgba(0,0,0,.5);
+    background: linear-gradient(180deg,#2c2c31,#201f22 46%,#171619 100%);
+    border: 1px solid rgba(255,255,255,.05);
+    box-shadow: inset 0 1.5px 0 rgba(255,255,255,.14), inset 0 -3px 7px rgba(0,0,0,.5),
+      0 2px 0 #141416, 0 3px 0 #101011, 0 4px 0 #0b0b0c, 0 5px 0 #070708, 0 8px 11px rgba(0,0,0,.6);
+    transition: transform .07s ease, box-shadow .1s ease, color .14s, background .14s; }
+  .pf-key::before { content: ""; position: absolute; inset: 12% 14% 22%; border-radius: calc(var(--k)*.14);
+    background: radial-gradient(115% 85% at 50% 12%, rgba(255,255,255,.1), transparent 62%); pointer-events: none; }
+  .pf-key.space { width: clamp(150px,30vw,320px); }
+  .pf-key.down { transform: translateY(4px); color: #fff;
+    background: linear-gradient(180deg,#2f7a5a,#17452f);
+    box-shadow: inset 0 1.5px 0 rgba(255,255,255,.2), inset 0 -2px 6px rgba(0,0,0,.4),
+      0 1px 0 #0c2b1e, 0 2px 0 #092016, 0 4px 9px rgba(0,0,0,.4),
+      0 0 26px -1px rgba(120,224,166,.8), 0 0 0 1px rgba(120,224,166,.55); }
+  .pf-skip { font-family: var(--mono); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted); flex: none; animation: pfSkipFade 2.4s ease-in-out 1.2s infinite; }
+  @keyframes pfSkipFade { 0%,100% { opacity: .32; } 50% { opacity: .72; } }
+  @media (max-width: 560px){ .pf-kbd { transform: none; } .pf-title { font-size: clamp(2.4rem,13vw,4rem); } }
+  @media (prefers-reduced-motion: reduce){ .pf-intro { display: none !important; } }
 </style>
 </head>
 <body>
 
+<div class="pf-intro" id="pfIntro" aria-hidden="true">
+  <div class="pf-stage">
+    <div class="pf-title"></div>
+    <div class="pf-sub"></div>
+    <div class="pf-sub"></div>
+    <span class="pf-cursor"></span>
+  </div>
+  <div class="pf-kbd" aria-hidden="true">
+    <div class="pf-kbd-row">
+      <span class="pf-key" data-key="q">Q</span><span class="pf-key" data-key="w">W</span><span class="pf-key" data-key="e">E</span><span class="pf-key" data-key="r">R</span><span class="pf-key" data-key="t">T</span><span class="pf-key" data-key="y">Y</span><span class="pf-key" data-key="u">U</span><span class="pf-key" data-key="i">I</span><span class="pf-key" data-key="o">O</span><span class="pf-key" data-key="p">P</span>
+    </div>
+    <div class="pf-kbd-row">
+      <span class="pf-key" data-key="a">A</span><span class="pf-key" data-key="s">S</span><span class="pf-key" data-key="d">D</span><span class="pf-key" data-key="f">F</span><span class="pf-key" data-key="g">G</span><span class="pf-key" data-key="h">H</span><span class="pf-key" data-key="j">J</span><span class="pf-key" data-key="k">K</span><span class="pf-key" data-key="l">L</span>
+    </div>
+    <div class="pf-kbd-row">
+      <span class="pf-key" data-key="z">Z</span><span class="pf-key" data-key="x">X</span><span class="pf-key" data-key="c">C</span><span class="pf-key" data-key="v">V</span><span class="pf-key" data-key="b">B</span><span class="pf-key" data-key="n">N</span><span class="pf-key" data-key="m">M</span>
+    </div>
+    <div class="pf-kbd-row">
+      <span class="pf-key space" data-key=" "></span>
+    </div>
+  </div>
+  <div class="pf-skip">click to skip</div>
+</div>
+<script>
+(function(){
+  var intro = document.getElementById("pfIntro");
+  if (!intro) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var seen = false; try { seen = sessionStorage.getItem("pfIntroSeen") === "1"; } catch(e){}
+  var cursor = intro.querySelector(".pf-cursor");
+  function dismiss(){
+    if (intro.classList.contains("done")) return;
+    document.body.classList.remove("pf-intro-active");
+    intro.classList.add("done");
+    try { sessionStorage.setItem("pfIntroSeen","1"); } catch(e){}
+    setTimeout(function(){ if (intro.parentNode) intro.parentNode.removeChild(intro); }, 900);
+  }
+  if (reduce || seen){ dismiss(); return; }
+  document.body.classList.add("pf-intro-active");
+  intro.addEventListener("click", dismiss);
+
+  var keys = {};
+  Array.prototype.forEach.call(intro.querySelectorAll(".pf-key"), function(k){ keys[k.dataset.key] = k; });
+  function press(ch){
+    var el = keys[ch]; if (!el) return;
+    el.classList.add("down");
+    setTimeout(function(){ el.classList.remove("down"); }, 110);
+  }
+  var subs = intro.querySelectorAll(".pf-sub");
+  var steps = [
+    { el: intro.querySelector(".pf-title"), text: "backend\nengineer", speed: 92 },
+    { el: subs[0], text: "java · spring boot · kafka · aws", speed: 30 },
+    { el: subs[1], text: "distributed systems, in real time", speed: 32 }
+  ];
+  var failsafe = setTimeout(dismiss, 13000);
+  var si = 0;
+  function runStep(){
+    if (si >= steps.length){ setTimeout(function(){ clearTimeout(failsafe); dismiss(); }, 820); return; }
+    var s = steps[si++], i = 0, acc = "";
+    s.el.appendChild(cursor);
+    (function typeChar(){
+      if (i >= s.text.length){ setTimeout(runStep, 360); return; }
+      var ch = s.text.charAt(i++);
+      if (ch === "\n"){ acc += "\n"; }
+      else { acc += ch; press(ch.toLowerCase()); }
+      s.el.innerHTML = acc.replace(/\n/g, "<br>");
+      s.el.appendChild(cursor);
+      var d = ch === " " ? s.speed * 1.3 : (s.speed * 0.65 + Math.random() * s.speed * 0.7);
+      setTimeout(typeChar, d);
+    })();
+  }
+  setTimeout(runStep, 520);
+})();
+</script>
 
 <header class="nav">
   <div class="wrap nav-in">
