@@ -306,6 +306,47 @@
   @keyframes pfSkipFade { 0%,100% { opacity: .32; } 50% { opacity: .72; } }
   @media (max-width: 560px){ .pf-kbd { transform: none; } .pf-title { font-size: clamp(2.4rem,13vw,4rem); } }
   @media (prefers-reduced-motion: reduce){ .pf-intro { display: none !important; } }
+
+  /* ===== nav counters ===== */
+  .nav-right { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .navstats { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: .72rem; color: var(--muted); white-space: nowrap; }
+  .navstats .ns-item { display: inline-flex; align-items: center; gap: 5px; }
+  .navstats b { color: var(--dim); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .navstats .ns-ico { color: var(--live); font-size: .82em; }
+  .navstats .ns-sep { opacity: .35; }
+  @media (max-width: 640px){ .navstats .ns-lbl { display: none; } .nav-right { gap: 10px; } }
+  @media (max-width: 400px){ .navstats .ns-sep { display: none; } .navstats { gap: 7px; } }
+
+  /* ===== guided tour ===== */
+  .tour-spot { position: fixed; z-index: 10000; border-radius: 12px; pointer-events: none;
+    box-shadow: 0 0 0 9999px rgba(6,6,8,.76), 0 0 0 2px var(--live), 0 0 22px rgba(120,224,166,.5);
+    transition: all .45s cubic-bezier(.5,0,.2,1); }
+  .tour-arrow { position: fixed; width: 0; height: 0; z-index: 10002; transition: all .45s cubic-bezier(.5,0,.2,1); }
+  .tour-arrow.up { border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 9px solid var(--elev2); }
+  .tour-arrow.down { border-left: 9px solid transparent; border-right: 9px solid transparent; border-top: 9px solid var(--elev2); }
+  .tour-pop { position: fixed; z-index: 10001; width: min(310px,86vw); background: var(--elev2);
+    border: 1px solid var(--line2); border-radius: 14px; padding: 16px 18px;
+    box-shadow: 0 24px 70px rgba(0,0,0,.66);
+    transition: left .45s cubic-bezier(.5,0,.2,1), top .45s cubic-bezier(.5,0,.2,1); }
+  .tour-pop .tp-step { font-family: var(--mono); font-size: .66rem; letter-spacing: .18em; text-transform: uppercase; color: var(--live); margin-bottom: 7px; }
+  .tour-pop h5 { font-size: 1.02rem; color: var(--text); margin: 0 0 6px; font-weight: 700; }
+  .tour-pop p { font-size: .85rem; color: var(--dim); line-height: 1.5; margin: 0; }
+  .tour-row { display: flex; align-items: center; gap: 9px; margin-top: 15px; }
+  .tour-dots { display: flex; gap: 5px; }
+  .tour-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--line2); transition: background .2s; }
+  .tour-dots i.on { background: var(--live); }
+  .tour-row .sp { margin-left: auto; }
+  .tour-btn { font-family: var(--mono); font-size: .76rem; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+    border: 1px solid var(--line2); background: transparent; color: var(--dim); transition: all .18s; }
+  .tour-btn:hover { color: var(--text); }
+  .tour-btn.next { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
+  .tour-btn.next:hover { filter: brightness(.9); }
+  .tour-btn.skip { border: none; color: var(--muted); padding: 7px 4px; }
+  .tour-help { position: fixed; right: 18px; bottom: 18px; z-index: 8000; width: 42px; height: 42px; border-radius: 50%;
+    background: var(--elev2); border: 1px solid var(--line2); color: var(--dim); font-family: var(--mono); font-size: 1.05rem;
+    cursor: pointer; box-shadow: 0 8px 26px rgba(0,0,0,.5); transition: all .2s; display: grid; place-items: center; }
+  .tour-help:hover { color: var(--text); border-color: var(--live); transform: translateY(-2px); }
+  @media (prefers-reduced-motion: reduce){ .tour-spot, .tour-pop, .tour-arrow { transition: none !important; } }
 </style>
 
 <div class="pf-intro" id="pfIntro" aria-hidden="true">
@@ -341,6 +382,7 @@
     if (intro.classList.contains("done")) return;
     document.body.classList.remove("pf-intro-active");
     intro.classList.add("done");
+    if (window.pfOnIntroDone){ var cb = window.pfOnIntroDone; window.pfOnIntroDone = null; setTimeout(cb, 650); }
     setTimeout(function(){ if (intro.parentNode) intro.parentNode.removeChild(intro); }, 900);
   }
   if (reduce){ dismiss(); return; }
@@ -387,7 +429,14 @@
     <nav class="nav-links">
       <a href="#work">work</a><a href="#about">about</a><a href="#skills">skills</a><a href="#experience">experience</a><a href="#contact">contact</a>
     </nav>
-    <span class="navpill"><span class="liveblip"></span> Available</span>
+    <div class="nav-right">
+      <span class="navstats" id="navStats" title="unique views / get-in-touch clicks">
+        <span class="ns-item"><span class="ns-ico">◉</span><b id="statViews">0</b> <span class="ns-lbl">views</span></span>
+        <span class="ns-sep">/</span>
+        <span class="ns-item"><span class="ns-ico">✉</span><b id="statContact">0</b> <span class="ns-lbl">reached out</span></span>
+      </span>
+      <span class="navpill"><span class="liveblip"></span> Available</span>
+    </div>
   </div>
 </header>
 
@@ -628,5 +677,113 @@
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.08,rootMargin:"0px 0px -5% 0px"});
     document.querySelectorAll(".reveal").forEach(function(n){io.observe(n);});
   } else { document.querySelectorAll(".reveal").forEach(function(n){n.classList.add("in");}); }
+})();
+</script>
+
+<script>
+/* ===== live counters (Abacus — privacy-friendly hit counter) ===== */
+(function(){
+  var NS = "kumarsrajan-portfolio", BASE = "https://abacus.jasoncameron.dev";
+  var vEl = document.getElementById("statViews"), cEl = document.getElementById("statContact");
+  function fmt(n){ n = Number(n) || 0; if (n >= 1000){ var k = n/1000; return (k >= 10 ? Math.round(k) : k.toFixed(1).replace(/\.0$/,"")) + "k"; } return String(n); }
+  function show(el, n){ if (el && n != null) el.textContent = fmt(n); }
+  function call(path){ return fetch(BASE + path).then(function(r){ return r.json(); }).then(function(d){ return d.value; }); }
+
+  // unique view — increment once per browser, otherwise just read
+  var counted = false; try { counted = localStorage.getItem("pfCounted") === "1"; } catch(e){}
+  (counted ? call("/get/"+NS+"/views")
+           : call("/hit/"+NS+"/views").then(function(v){ try { localStorage.setItem("pfCounted","1"); } catch(e){} return v; }))
+    .then(function(v){ show(vEl, v); }).catch(function(){});
+
+  call("/get/"+NS+"/contact").then(function(v){ show(cEl, v); }).catch(function(){});
+
+  // get-in-touch — count unique clickers once per browser
+  var reached = false; try { reached = localStorage.getItem("pfReached") === "1"; } catch(e){}
+  Array.prototype.forEach.call(document.querySelectorAll('a[href^="mailto:"]'), function(a){
+    a.addEventListener("click", function(){
+      if (reached) return;
+      reached = true; try { localStorage.setItem("pfReached","1"); } catch(e){}
+      call("/hit/"+NS+"/contact").then(function(v){ show(cEl, v); }).catch(function(){});
+    });
+  });
+})();
+</script>
+
+<script>
+/* ===== first-visit guided tour ===== */
+(function(){
+  var STEPS = [
+    { sel: ".giant", title: "This is Kumar", body: "Backend engineer — the page you just watched type itself. Here's a 15-second tour.", place: "bottom" },
+    { sel: "#cardGrid .pcard", title: "Live projects", body: "Every card is a real project. Click one to open its architecture — and a LIVE preview of the running app.", place: "top" },
+    { sel: ".cta-row a[href^='mailto:']", title: "Get in touch", body: "Like what you see? This button emails me directly.", place: "bottom" },
+    { sel: "#navStats", title: "It counts, live", body: "Unique visits and reach-outs tick up here in real time — you just became one of them.", place: "bottom" }
+  ];
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var idx = 0, spot, pop, arrow, active = false;
+
+  function build(){
+    spot = document.createElement("div"); spot.className = "tour-spot";
+    arrow = document.createElement("div"); arrow.className = "tour-arrow up";
+    pop = document.createElement("div"); pop.className = "tour-pop";
+    pop.innerHTML = '<div class="tp-step"></div><h5></h5><p></p>' +
+      '<div class="tour-row"><div class="tour-dots"></div><span class="sp"></span>' +
+      '<button class="tour-btn back" type="button">back</button>' +
+      '<button class="tour-btn next" type="button">next</button>' +
+      '<button class="tour-btn skip" type="button">skip</button></div>';
+    document.body.appendChild(spot); document.body.appendChild(arrow); document.body.appendChild(pop);
+    pop.querySelector(".next").addEventListener("click", function(){ idx++; idx >= STEPS.length ? end(true) : positionStep(); });
+    pop.querySelector(".back").addEventListener("click", function(){ if (idx > 0){ idx--; positionStep(); } });
+    pop.querySelector(".skip").addEventListener("click", function(){ end(true); });
+    STEPS.forEach(function(){ pop.querySelector(".tour-dots").appendChild(document.createElement("i")); });
+  }
+
+  function positionStep(){
+    var step = STEPS[idx];
+    var t = document.querySelector(step.sel);
+    if (!t){ idx++; if (idx >= STEPS.length){ end(true); } else { positionStep(); } return; }
+    t.scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(function(){
+      var r = t.getBoundingClientRect(), pad = 8;
+      spot.style.left = (r.left - pad) + "px"; spot.style.top = (r.top - pad) + "px";
+      spot.style.width = (r.width + pad*2) + "px"; spot.style.height = (r.height + pad*2) + "px";
+      pop.querySelector(".tp-step").textContent = "Step " + (idx+1) + " / " + STEPS.length;
+      pop.querySelector("h5").textContent = step.title;
+      pop.querySelector("p").textContent = step.body;
+      Array.prototype.forEach.call(pop.querySelectorAll(".tour-dots i"), function(d, k){ d.className = k === idx ? "on" : ""; });
+      pop.querySelector(".back").style.display = idx === 0 ? "none" : "";
+      pop.querySelector(".next").textContent = idx === STEPS.length - 1 ? "done" : "next";
+      var pw = pop.offsetWidth, ph = pop.offsetHeight;
+      var below = step.place === "bottom" || (step.place !== "top" && r.bottom + 18 + ph < window.innerHeight);
+      var popTop = below ? r.bottom + 18 : r.top - ph - 18;
+      popTop = Math.max(12, Math.min(popTop, window.innerHeight - ph - 12));
+      var popLeft = r.left + r.width/2 - pw/2;
+      popLeft = Math.max(12, Math.min(popLeft, window.innerWidth - pw - 12));
+      pop.style.left = popLeft + "px"; pop.style.top = popTop + "px";
+      arrow.className = "tour-arrow " + (below ? "up" : "down");
+      var ax = Math.max(popLeft + 16, Math.min(r.left + r.width/2, popLeft + pw - 16));
+      arrow.style.left = (ax - 9) + "px";
+      arrow.style.top = (below ? popTop - 9 : popTop + ph) + "px";
+    }, 480);
+  }
+
+  function start(){ if (active) return; active = true; idx = 0; if (!spot) build();
+    spot.style.display = arrow.style.display = pop.style.display = "block"; positionStep(); }
+  function end(mark){ active = false;
+    if (spot){ spot.style.display = arrow.style.display = pop.style.display = "none"; }
+    if (mark){ try { localStorage.setItem("pfTourDone","1"); } catch(e){} } }
+
+  var help = document.createElement("button");
+  help.className = "tour-help"; help.type = "button"; help.textContent = "?";
+  help.title = "How this works"; help.setAttribute("aria-label", "Show guided tour");
+  help.addEventListener("click", start);
+  document.body.appendChild(help);
+
+  function maybeAutoStart(){
+    if (reduce) return;
+    var done = false; try { done = localStorage.getItem("pfTourDone") === "1"; } catch(e){}
+    if (!done) start();
+  }
+  window.pfOnIntroDone = maybeAutoStart;
+  setTimeout(function(){ if (!document.getElementById("pfIntro")) maybeAutoStart(); }, 1200);
 })();
 </script>
