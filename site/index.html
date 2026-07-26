@@ -336,16 +336,14 @@
   var intro = document.getElementById("pfIntro");
   if (!intro) return;
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-  var seen = false; try { seen = sessionStorage.getItem("pfIntroSeen") === "1"; } catch(e){}
   var cursor = intro.querySelector(".pf-cursor");
   function dismiss(){
     if (intro.classList.contains("done")) return;
     document.body.classList.remove("pf-intro-active");
     intro.classList.add("done");
-    try { sessionStorage.setItem("pfIntroSeen","1"); } catch(e){}
     setTimeout(function(){ if (intro.parentNode) intro.parentNode.removeChild(intro); }, 900);
   }
-  if (reduce || seen){ dismiss(); return; }
+  if (reduce){ dismiss(); return; }
   document.body.classList.add("pf-intro-active");
   intro.addEventListener("click", dismiss);
 
