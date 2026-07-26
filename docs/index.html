@@ -352,6 +352,29 @@
     cursor: pointer; box-shadow: 0 8px 26px rgba(0,0,0,.5); transition: all .2s; display: grid; place-items: center; }
   .tour-help:hover { color: var(--text); border-color: var(--live); transform: translateY(-2px); }
   @media (prefers-reduced-motion: reduce){ .tour-spot, .tour-pop, .tour-arrow { transition: none !important; } }
+
+  /* ===== contact form + whatsapp ===== */
+  .btn.wa { border-color: rgba(120,224,166,.5); color: var(--live); }
+  .btn.wa:hover { background: rgba(120,224,166,.1); border-color: var(--live); }
+  .cform { margin: 44px auto 0; max-width: 560px; display: flex; flex-direction: column; gap: 12px; text-align: left; }
+  .cf-row { display: flex; gap: 12px; }
+  .cf-row input { flex: 1; min-width: 0; }
+  .cform input, .cform textarea { width: 100%; font-family: var(--mono); font-size: .9rem; color: var(--text);
+    background: var(--elev); border: 1px solid var(--line); border-radius: 12px; padding: 13px 15px; outline: none;
+    transition: border-color .2s; }
+  .cform input::placeholder, .cform textarea::placeholder { color: var(--muted); }
+  .cform input:focus, .cform textarea:focus { border-color: var(--live); }
+  .cform textarea { resize: vertical; line-height: 1.5; }
+  .cf-send { font-family: var(--mono); font-size: .86rem; font-weight: 600; cursor: pointer; color: var(--bg);
+    background: var(--text); border: none; border-radius: 12px; padding: 14px 22px; align-self: flex-start;
+    transition: filter .2s, transform .15s; }
+  .cf-send:hover { filter: brightness(.9); }
+  .cf-send:active { transform: scale(.98); }
+  .cf-send:disabled { opacity: .5; cursor: default; }
+  .cf-status { font-family: var(--mono); font-size: .8rem; min-height: 1.2em; }
+  .cf-status.ok { color: var(--live); }
+  .cf-status.err { color: #ff8fa3; }
+  @media (max-width: 520px){ .cf-row { flex-direction: column; } }
 </style>
 </head>
 <body>
@@ -459,6 +482,7 @@
       <div class="cta-row">
         <a class="btn solid" href="#work">View work <span class="ar">↗</span></a>
         <a class="btn" href="mailto:saju757081@gmail.com">Get in touch</a>
+        <a class="btn wa" href="https://wa.me/919506301217?text=Hi%20Kumar%2C%20I%20found%20your%20portfolio%20and%20loved%20your%20work.%20I'd%20like%20to%20connect%20about%20an%20opportunity." target="_blank" rel="noopener">WhatsApp <span class="ar">↗</span></a>
         <a class="btn" href="https://github.com/srajan1234" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
@@ -508,9 +532,21 @@
       <h2><a href="mailto:saju757081@gmail.com">Let's build<br>something <span class="em">scalable</span></a></h2>
       <div class="cta-row">
         <a class="btn solid" href="mailto:saju757081@gmail.com">saju757081@gmail.com</a>
+        <a class="btn wa" href="https://wa.me/919506301217?text=Hi%20Kumar%2C%20I%20found%20your%20portfolio%20and%20loved%20your%20work.%20I'd%20like%20to%20connect%20about%20an%20opportunity." target="_blank" rel="noopener">WhatsApp ↗</a>
         <a class="btn" href="https://linkedin.com/in/kumar-srajan-9876091a7" target="_blank" rel="noopener">LinkedIn ↗</a>
         <a class="btn" href="https://github.com/srajan1234" target="_blank" rel="noopener">GitHub ↗</a>
       </div>
+      <form class="cform" id="cform" novalidate>
+        <div class="cf-row">
+          <input name="name" placeholder="Your name" required autocomplete="name">
+          <input name="email" type="email" placeholder="Email" required autocomplete="email">
+        </div>
+        <input name="company" placeholder="Company (optional)" autocomplete="organization">
+        <textarea name="message" placeholder="What would you like to build together?" rows="4" required></textarea>
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+        <button type="submit" class="cf-send">Send message →</button>
+        <div class="cf-status" id="cfStatus" role="status" aria-live="polite"></div>
+      </form>
     </div>
   </section>
 </main>
@@ -704,15 +740,54 @@
 
   call("/get/"+NS+"/contact").then(function(v){ show(cEl, v); }).catch(function(){});
 
-  // get-in-touch — count unique clickers once per browser
+  // reach-out — count unique people once per browser (email, whatsapp, or form)
   var reached = false; try { reached = localStorage.getItem("pfReached") === "1"; } catch(e){}
-  Array.prototype.forEach.call(document.querySelectorAll('a[href^="mailto:"]'), function(a){
-    a.addEventListener("click", function(){
-      if (reached) return;
-      reached = true; try { localStorage.setItem("pfReached","1"); } catch(e){}
-      call("/hit/"+NS+"/contact").then(function(v){ show(cEl, v); }).catch(function(){});
-    });
+  function markReached(){
+    if (reached) return;
+    reached = true; try { localStorage.setItem("pfReached","1"); } catch(e){}
+    call("/hit/"+NS+"/contact").then(function(v){ show(cEl, v); }).catch(function(){});
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('a[href^="mailto:"], a[href*="wa.me"]'), function(a){
+    a.addEventListener("click", markReached);
   });
+
+  // contact form → FormSubmit (no backend). NOTE: the FIRST submission triggers a
+  // one-time confirmation email to saju757081@gmail.com — click it once to activate.
+  var form = document.getElementById("cform");
+  if (form){
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      var g = function(n){ var el = form.querySelector('[name="'+n+'"]'); return el ? el.value.trim() : ""; };
+      if (g("_honey")) return; // spam bot tripped the honeypot
+      var st = document.getElementById("cfStatus"), btn = form.querySelector(".cf-send");
+      if (!g("name") || !g("email") || !g("message")){
+        st.className = "cf-status err"; st.textContent = "Please add your name, email and a message."; return;
+      }
+      btn.disabled = true; st.className = "cf-status"; st.textContent = "Sending…";
+      fetch("https://formsubmit.co/ajax/saju757081@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          name: g("name"), email: g("email"), company: g("company"), message: g("message"),
+          _subject: "New message from your portfolio", _template: "table", _captcha: "false"
+        })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (res && (res.success === true || res.success === "true")){
+          st.className = "cf-status ok"; st.textContent = "Thanks! Your message is on its way — I'll reply soon.";
+          form.reset(); markReached();
+        } else {
+          st.className = "cf-status err"; st.textContent = (res && res.message) || "Couldn't send — please email me directly.";
+          btn.disabled = false;
+        }
+      })
+      .catch(function(){
+        st.className = "cf-status err"; st.textContent = "Network error — please email me directly.";
+        btn.disabled = false;
+      });
+    });
+  }
 })();
 </script>
 
@@ -794,6 +869,17 @@
   setTimeout(function(){ if (!document.getElementById("pfIntro")) maybeAutoStart(); }, 1200);
 })();
 </script>
+
+<!-- ===== Analytics: GoatCounter (privacy-friendly, no cookies, GDPR-fine) =====
+     Shows where views come from — country, referrer (LinkedIn/GitHub/email), device, popular sections.
+     To turn on (60 seconds):
+       1. Sign up free at https://www.goatcounter.com/signup and pick a code (e.g. "kumarsrajan")
+       2. Replace BOTH "YOURCODE" occurrences below with that code
+       3. Delete this comment's opening "<!--" and closing "-->" so the <script> runs
+       4. View your dashboard anytime at https://YOURCODE.goatcounter.com
+<script data-goatcounter="https://YOURCODE.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+-->
+
 
 </body>
 </html>
