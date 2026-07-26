@@ -347,10 +347,11 @@
   .tour-btn.next { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
   .tour-btn.next:hover { filter: brightness(.9); }
   .tour-btn.skip { border: none; color: var(--muted); padding: 7px 4px; }
-  .tour-help { position: fixed; right: 18px; bottom: 18px; z-index: 8000; width: 42px; height: 42px; border-radius: 50%;
-    background: var(--elev2); border: 1px solid var(--line2); color: var(--dim); font-family: var(--mono); font-size: 1.05rem;
-    cursor: pointer; box-shadow: 0 8px 26px rgba(0,0,0,.5); transition: all .2s; display: grid; place-items: center; }
+  .tour-help { position: fixed; right: 18px; bottom: 18px; z-index: 8000; border-radius: 999px; padding: 10px 17px;
+    background: var(--elev2); border: 1px solid var(--line2); color: var(--dim); font-family: var(--mono); font-size: .78rem; letter-spacing: .04em;
+    cursor: pointer; box-shadow: 0 8px 26px rgba(0,0,0,.4); transition: color .2s, border-color .2s, transform .2s; display: inline-flex; align-items: center; gap: 7px; }
   .tour-help:hover { color: var(--text); border-color: var(--live); transform: translateY(-2px); }
+  .tour-help .th-ico { color: var(--live); font-size: .9rem; }
   @media (prefers-reduced-motion: reduce){ .tour-spot, .tour-pop, .tour-arrow { transition: none !important; } }
 
   /* ===== contact form + whatsapp ===== */
@@ -375,9 +376,41 @@
   .cf-status.ok { color: var(--live); }
   .cf-status.err { color: #ff8fa3; }
   @media (max-width: 520px){ .cf-row { flex-direction: column; } }
+
+  /* ===== light theme ===== */
+  :root[data-theme="light"] {
+    --bg:#F6F5F1; --elev:#FFFFFF; --elev2:#F1EFE9;
+    --line:rgba(0,0,0,.10); --line2:rgba(0,0,0,.20);
+    --text:#17160F; --dim:#4B4A43; --muted:#86857C;
+    --live:#0F9B54; --accent:#17160F;
+  }
+  :root[data-theme="light"] header.nav { background: rgba(246,245,241,.82); }
+  :root[data-theme="light"] .avatar { background: radial-gradient(120% 120% at 30% 20%, #ffffff, #e6e4dc); }
+  :root[data-theme="light"] .btn.solid:hover { background: #000; }
+  :root[data-theme="light"] .modal-close { background: rgba(0,0,0,.06); color: var(--text); }
+  :root[data-theme="light"] .modal-close:hover { background: rgba(0,0,0,.14); }
+  :root[data-theme="light"] .live-tag.on { color: #0F9B54; border-color: rgba(15,155,84,.4); }
+  :root[data-theme="light"] .pcard:hover { box-shadow: 0 22px 54px rgba(0,0,0,.14); }
+
+  /* intro stays a dark boot screen in any theme — fixed colors */
+  .pf-title { color: #F4F3EF; }
+  .pf-sub { color: #B2B1AA; }
+  .pf-sub + .pf-sub { color: #78776F; }
+  .pf-cursor { background: #78E0A6; box-shadow: 0 0 10px rgba(120,224,166,.7); }
+  .pf-skip { color: #78776F; }
+
+  /* theme toggle */
+  .theme-toggle { cursor: pointer; width: 36px; height: 36px; border-radius: 50%; flex: none;
+    border: 1px solid var(--line2); background: transparent; color: var(--dim); font-size: .95rem;
+    display: grid; place-items: center; transition: color .2s, border-color .2s, transform .3s; }
+  .theme-toggle:hover { color: var(--text); border-color: var(--text); transform: rotate(25deg); }
 </style>
 </head>
 <body>
+
+<script>
+(function(){ try { if (localStorage.getItem("pfTheme") === "light") document.documentElement.setAttribute("data-theme","light"); } catch(e){} })();
+</script>
 
 <div class="pf-intro" id="pfIntro" aria-hidden="true">
   <div class="pf-stage">
@@ -465,6 +498,7 @@
         <span class="ns-sep">/</span>
         <span class="ns-item"><span class="ns-ico">✉</span><b id="statContact">0</b> <span class="ns-lbl">reached out</span></span>
       </span>
+      <button class="theme-toggle" id="themeBtn" type="button" aria-label="Switch light or dark theme">☀</button>
       <span class="navpill"><span class="liveblip"></span> Available</span>
     </div>
   </div>
@@ -855,8 +889,9 @@
     if (mark){ try { localStorage.setItem("pfTourDone","1"); } catch(e){} } }
 
   var help = document.createElement("button");
-  help.className = "tour-help"; help.type = "button"; help.textContent = "?";
-  help.title = "How this works"; help.setAttribute("aria-label", "Show guided tour");
+  help.className = "tour-help"; help.type = "button";
+  help.innerHTML = '<span class="th-ico" aria-hidden="true">◎</span> Take a tour';
+  help.title = "Start the guided tour"; help.setAttribute("aria-label", "Start the guided tour");
   help.addEventListener("click", start);
   document.body.appendChild(help);
 
@@ -872,6 +907,27 @@
 
 <!-- Analytics: GoatCounter (privacy-friendly, no cookies) — dashboard: https://kumarsrajan.goatcounter.com -->
 <script data-goatcounter="https://kumarsrajan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+<script>
+/* ===== theme toggle (dark default, light option, persisted) ===== */
+(function(){
+  var btn = document.getElementById("themeBtn");
+  if (!btn) return;
+  function icon(){
+    var light = document.documentElement.getAttribute("data-theme") === "light";
+    btn.textContent = light ? "☾" : "☀";
+    btn.title = light ? "Switch to dark" : "Switch to light";
+  }
+  icon();
+  btn.addEventListener("click", function(){
+    var light = document.documentElement.getAttribute("data-theme") === "light";
+    if (light) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme","light");
+    try { localStorage.setItem("pfTheme", light ? "dark" : "light"); } catch(e){}
+    icon();
+  });
+})();
+</script>
 
 
 </body>
