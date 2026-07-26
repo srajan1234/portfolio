@@ -620,11 +620,11 @@
   var marquee = ["Java","Spring Boot","Microservices","AWS Lambda","Kafka","PostgreSQL","MongoDB","Cassandra","Redis","DynamoDB","EventBridge","Docker","Kubernetes","Spring Cloud","RabbitMQ","Terraform"];
   var stats = [ {n:"5+", k:"Years Experience"}, {n:"9", k:"Systems Designed"}, {n:"60%", k:"Infra Cost Cut"}, {n:"Millions", k:"Messages Delivered"} ];
   var projects = [
-    { name:"Mission Control", slug:"hub", cat:"System · Live Demos", badge:"How this runs",
-      desc:"The engineering behind this portfolio: every project here is a real app you can watch running live, embedded right in its card. A zero-dependency Node control plane starts, stops and reverse-proxies all 9 apps on demand — each on its own port — and a Cloudflare Tunnel streams them into this site.",
-      hl:"<b>Zero-dependency Node control plane</b> — process supervisor + streaming reverse proxy + live SSE logs — that makes every other project demoable live.",
-      chips:["Node.js","Reverse proxy","SSE","Docker","Cloudflare Tunnel","Vite base-path"],
-      arch:[ {l:"Public", n:["Portfolio (GitHub Pages)","Project-card iframe"]}, {l:"Edge", n:["Cloudflare Tunnel"]}, {l:"Control plane (:8088)", n:["Process supervisor","Reverse proxy","SSE log stream"]}, {l:"Targets", n:["9 apps · unique ports","Docker Compose"]} ] },
+    { name:"This Portfolio", slug:"portfolio", cat:"Meta · How it's built", badge:"Behind the scenes",
+      desc:"The site you're on, as an engineering project. A hand-authored static site (GitHub Pages) with a live-typed keyboard intro, guided tour, theming, privacy-friendly analytics and a contact pipeline — plus a zero-dependency Node &lsquo;Mission Control&rsquo; plane that runs all 9 apps locally and streams them live into each card over a Cloudflare Tunnel. Ideas public in docs; source in private repos.",
+      hl:"Four layers — <b>animated site · engagement &amp; analytics · live-demo control plane · public docs / private code</b>. Mission Control is just one of them.",
+      chips:["HTML/CSS/JS","GitHub Pages","Node.js","Cloudflare Tunnel","Mermaid","GoatCounter","Vite base-path"],
+      arch:[ {l:"Presentation", n:["Animated site","Keyboard intro","Guided tour","Light / dark"]}, {l:"Engagement", n:["Live counters","GoatCounter","Contact form + WhatsApp"]}, {l:"Live demos · Mission Control", n:["Node control plane","Reverse proxy","SSE logs","Cloudflare Tunnel"]}, {l:"Content & code", n:["Public design docs","9 private code repos"]} ] },
     { name:"IAG Cargo Portal", slug:"iag-cargo-portal", cat:"Serverless · AWS", badge:"Current @ Coforge", caseStudy:true,
       desc:"Modernizing a legacy airline-cargo portal (Java 8 monolith) into a serverless AWS microservices platform with an Angular micro-frontend, reusing the same Oracle DB via cross-account private networking.",
       hl:"<b>15 Lambdas</b>, BFF pattern, async WebSocket+SQS flight search, EventBridge notifications.",
@@ -701,7 +701,7 @@
   function schematic(a){ var t=""; a.forEach(function(x,i){ if(i>0) t+='<div class="tier-conn"><span></span></div>'; var n=x.n.map(function(nn){return '<span class="snode'+(i===0?" acc":"")+'">'+nn+'</span>';}).join(""); t+='<div><div class="tier-label">'+x.l+'</div><div class="tier-nodes">'+n+'</div></div>'; }); return '<div class="schematic"><div class="sch-cap">// high-level architecture</div>'+t+'</div>'; }
 
   var themes = {
-    "hub":{c1:"#5eead4",c2:"#6366f1",icon:"🛰️"},
+    "portfolio":{c1:"#5eead4",c2:"#6366f1",icon:"🧩"},
     "iag-cargo-portal":{c1:"#38bdf8",c2:"#6366f1",icon:"✈️"},
     "retaint":{c1:"#f472b6",c2:"#fb923c",icon:"📣"},
     "vibe":{c1:"#a78bfa",c2:"#22d3ee",icon:"🧠"},
