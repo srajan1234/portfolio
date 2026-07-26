@@ -720,7 +720,7 @@
 
   var ov=document.getElementById("modalOv"), mroot=document.getElementById("modalRoot"), currentIdx=null;
   var demo={ "trading-assistant":"/trading","vibe":"/vibe","retaint":"/retaint","influencehub":"/influencehub","cartag":"/cartag","snapads-pro":"/snapads","inhousegames":"/games" };
-  var DEFAULT_DEMO=""; // empty → embeds show the "request live demo" WhatsApp screen; paste a tunnel URL via "connect" to go live
+  var DEFAULT_DEMO="https://kathy-helen-icq-crafts.trycloudflare.com"; // live tunnel to local hub; embeds render running apps. Revert to "" when hub/tunnel is off.
   window.setDemoBase=function(){
     var cur=localStorage.getItem("demoBase")||"";
     var v=prompt("Paste your hub's public URL (ngrok / Cloudflare Tunnel), e.g. https://abc123.ngrok-free.app\n\nLeave blank to disconnect.", cur);
