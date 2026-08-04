@@ -16,21 +16,49 @@
 <meta name="twitter:title" content="Kumar Srajan — Backend Engineer">
 <meta name="twitter:description" content="Java · Spring Boot · Kafka · AWS. 10 systems with live in-browser demos and full architecture docs.">
 <meta name="twitter:image" content="https://srajan1234.github.io/portfolio/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --display: "Space Grotesk", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --sans: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --bg: #0A0A0B; --elev: #101012; --elev2: #16161A;
     --line: rgba(255,255,255,.09); --line2: rgba(255,255,255,.20);
     --text: #F4F3EF; --dim: #B2B1AA; --muted: #78776F;
     --live: #78E0A6; --accent: #F4F3EF;
+    --glow: 0 0 22px rgba(120,224,166,.35);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.55; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow-x: hidden; }
   a { color: inherit; text-decoration: none; }
-  ::selection { background: var(--text); color: var(--bg); }
+  ::selection { background: var(--live); color: var(--bg); }
   .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* ── ui-ux-pro-max enhancements: display type · accent glow · richer motion ── */
+  h1.giant, .sec-head h2, .contact h2, .pf-title, .pcard h3, .proj-head h3,
+  .modal-hd h3, .stat .n, .about .big { font-family: var(--display); }
+  h1.giant .star { text-shadow: var(--glow); animation: starPulse 3.4s ease-in-out infinite; }
+  @keyframes starPulse { 0%,100% { text-shadow: 0 0 14px rgba(120,224,166,.3); transform: scale(1); }
+                          50% { text-shadow: 0 0 26px rgba(120,224,166,.65); transform: scale(1.08); } }
+  .liveblip, .avatar .st { box-shadow: 0 0 0 4px rgba(120,224,166,.16), 0 0 12px rgba(120,224,166,.5); }
+  /* buttons: springier press + accent lift */
+  .btn { transition: background .22s, color .22s, transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .28s, border-color .22s; }
+  .btn.solid:hover { box-shadow: 0 10px 30px -8px rgba(120,224,166,.5); }
+  .btn:not(.solid):hover { border-color: var(--live); box-shadow: 0 8px 24px -10px rgba(120,224,166,.4); }
+  /* project cards: deeper lift + accent ring on hover */
+  .pcard { transition: transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s, box-shadow .35s; }
+  .pcard:hover { box-shadow: 0 26px 60px -22px rgba(0,0,0,.7), 0 0 0 1px color-mix(in srgb, var(--c1) 40%, transparent), 0 0 34px -10px color-mix(in srgb, var(--c1) 45%, transparent); }
+  .pcard .arr { transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+  .pcard:hover .arr { transform: translate(5px,-5px) scale(1.15); }
+  /* stat count-up numbers get a subtle gradient sheen */
+  .stat .n { background: linear-gradient(120deg, var(--text) 40%, var(--live)); -webkit-background-clip: text; background-clip: text; }
+  /* nav link underline grow */
+  .nav-links a { position: relative; }
+  .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -3px; height: 1.5px; width: 0; background: var(--live); transition: width .28s cubic-bezier(.2,.8,.2,1); }
+  .nav-links a:hover::after { width: 100%; }
   @media (max-width: 600px){ .wrap { padding: 0 20px; } }
 
   .lbl { font-family: var(--mono); font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
