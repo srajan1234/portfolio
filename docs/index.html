@@ -799,7 +799,7 @@
   var ov=document.getElementById("modalOv"), mroot=document.getElementById("modalRoot"), currentIdx=null;
   var demo={ "trading-assistant":"/trading","vibe":"/vibe","retaint":"/retaint","influencehub":"/influencehub","cartag":"/cartag","snapads-pro":"/snapads","inhousegames":"/games","linder":"/linder" };
   demo["vibe"]="/vibe-home"; // Vibe card embeds the landing; its buttons route to app/business/insights via the tunnel
-  var DEFAULT_DEMO="https://calls-closely-choices-robots.trycloudflare.com"; // live tunnel to local hub; embeds render running apps. Revert to "" when hub/tunnel is off.
+  var DEFAULT_DEMO="https://second-gentleman-dairy-continent.trycloudflare.com"; // live tunnel to local hub; embeds render running apps. Revert to "" when hub/tunnel is off.
   window.setDemoBase=function(){
     var cur=localStorage.getItem("demoBase")||"";
     var v=prompt("Paste your hub's public URL (ngrok / Cloudflare Tunnel), e.g. https://abc123.ngrok-free.app\n\nLeave blank to disconnect.", cur);
