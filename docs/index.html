@@ -620,7 +620,7 @@
       <div class="about reveal" style="margin-top:70px">
         <div class="big">Backend engineer who ships systems, not just services.</div>
         <div>
-          <p>Over <strong>5+ years</strong> I've built and operated distributed backend systems in production — currently modernizing a legacy airline-cargo portal into a <strong>serverless AWS microservices platform</strong> at Coforge (IAG Cargo / British Airways), and previously a Kafka broadcast platform moving <strong>millions of messages</strong> at Shiprocket.</p>
+          <p>Over <strong>5+ years</strong> I've built and operated distributed backend systems in production — most recently modernizing a legacy airline-cargo portal into a <strong>serverless AWS microservices platform</strong> at Coforge (IAG Cargo / British Airways), and previously a Kafka broadcast platform moving <strong>millions of messages</strong> at Shiprocket.</p>
           <p>My toolkit: <strong>Java, Spring Boot &amp; Spring Cloud microservices</strong> and <strong>AWS Lambda / serverless</strong>, backed by PostgreSQL, MongoDB, Cassandra, Redis and DynamoDB, wired with Kafka, RabbitMQ, EventBridge and SQS, shipped on Docker &amp; Kubernetes.</p>
           <p>I care about the parts that don't show in a demo: schema design, failure modes, idempotency, security boundaries, latency and cost.</p>
         </div>
@@ -745,8 +745,8 @@
     { cat:"DevOps & Practice", items:["Docker","Kubernetes","CI/CD","System Design","TDD","Grafana"] }
   ];
   var jobs = [
-    { when:"May 2025 — Present", role:"Senior Software Engineer", co:"Coforge · IAG Cargo (British Airways)", now:true,
-      text:"Modernizing a legacy airline-cargo portal into a serverless AWS microservices platform (Angular micro-frontends + ~15 Lambdas). Built backend services for booking, tracking and pricing — async flight search over WebSocket+SQS, event-driven notifications on EventBridge, and a private cross-account Oracle data layer." },
+    { when:"May 2025 — Nov 2026", role:"Senior Software Engineer", co:"Coforge · IAG Cargo (British Airways)",
+      text:"Modernized a legacy airline-cargo portal into a serverless AWS microservices platform (Angular micro-frontends + ~15 Lambdas). Built backend services for booking, tracking and pricing — async flight search over WebSocket+SQS, event-driven notifications on EventBridge, and a private cross-account Oracle data layer." },
     { when:"Sep 2024 — Mar 2025", role:"Software Engineer", co:"Quara AI Tech",
       text:"Led a DynamoDB → PostgreSQL migration cutting operational cost 60% while holding availability under peak auction load. Built a hybrid auction module with online/offline bidder switching." },
     { when:"Feb 2022 — Sep 2024", role:"Software Engineer", co:"Shiprocket",
@@ -882,7 +882,9 @@
   var NS = "kumarsrajan-portfolio", BASE = "https://abacus.jasoncameron.dev";
   var vEl = document.getElementById("statViews"), cEl = document.getElementById("statContact");
   function fmt(n){ n = Number(n) || 0; if (n >= 1000){ var k = n/1000; return (k >= 10 ? Math.round(k) : k.toFixed(1).replace(/\.0$/,"")) + "k"; } return String(n); }
-  function show(el, n){ if (el && n != null) el.textContent = fmt(n); }
+  function show(el, n){ if (el && n != null){ el.textContent = fmt(n); try { localStorage.setItem("pfStat_"+el.id, String(n)); } catch(e){} } }
+  // the counter API can take many seconds to answer — paint the last known numbers immediately
+  [vEl, cEl].forEach(function(el){ try { var c = el && localStorage.getItem("pfStat_"+el.id); if (c != null) el.textContent = fmt(c); } catch(e){} });
   function call(path){ return fetch(BASE + path).then(function(r){ return r.json(); }).then(function(d){ return d.value; }); }
 
   // unique view — increment once per browser, otherwise just read
