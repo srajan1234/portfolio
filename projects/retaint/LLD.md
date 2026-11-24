@@ -1,6 +1,6 @@
 # Retaint — Low-Level Design
 
-**Sanitized architecture case study of a proprietary multi-tenant platform — brands, domains and internal identifiers omitted.** All paths below are illustrative and generic; no secrets, hostnames or provider identifiers are shown.
+**Side project — architecture and design documentation; source code is kept private.** All paths below are illustrative and generic; no secrets, hostnames or provider identifiers are shown.
 
 ## Service & Module Breakdown
 

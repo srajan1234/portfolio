@@ -1,6 +1,6 @@
 # Retaint — Key Flows
 
-**Sanitized architecture case study of a proprietary multi-tenant platform — brands, domains and internal identifiers omitted.**
+**Side project — architecture and design documentation; source code is kept private.**
 
 Each flow below shows the runtime interaction across services. All identifiers, providers and stores are generic.
 
