@@ -2,7 +2,7 @@
 
 > Broadcast, automate and converse with customers across every channel — email, SMS, WhatsApp, push, RCS and live chat — from one multi-tenant SaaS.
 
-**Sanitized architecture case study of a proprietary multi-tenant platform — brands, domains and internal identifiers omitted.**
+**Side project — architecture and design documentation; source code is kept private.**
 
 ---
 

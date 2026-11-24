@@ -20,8 +20,8 @@ redesign that cut campaign failure rates by 60% across millions of messages.
 This repository is my **systems-design portfolio**: for each project below it documents the
 **High-Level Design (HLD)**, **Low-Level Design (LLD)**, and **key runtime flows** — architecture diagrams, data
 models, API surfaces, and design trade-offs. Source code is kept private; these docs show *how* the systems are
-built, not a copy-paste of the implementation. Two entries (**IAG Cargo Portal** and **Retaint**) are **sanitized
-case studies** of proprietary work — architecture and design only, with internal identifiers, credentials, and
+built, not a copy-paste of the implementation. One entry (**IAG Cargo Portal**) is a **sanitized
+case study** of proprietary work — architecture and design only, with internal identifiers, credentials, and
 infrastructure details deliberately omitted.
 
 > 🔗 **Live portfolio site:** **https://srajan1234.github.io/portfolio/**
@@ -33,7 +33,7 @@ infrastructure details deliberately omitted.
 | Project | What it is | Core stack | Design docs |
 |---|---|---|---|
 | **[IAG Cargo Portal](./projects/iag-cargo-portal/)** 🛩️ | *(case study, Coforge)* Modernizing a legacy airline-cargo portal (Java 8 monolith) into a **serverless AWS microservices** platform with an Angular micro-frontend — same Oracle DB via cross-account private networking. | Angular 21 · AWS Lambda · API Gateway · Java 21 · Python · DynamoDB · EventBridge · SAM/Terraform | [README](./projects/iag-cargo-portal/README.md) · [HLD](./projects/iag-cargo-portal/HLD.md) · [LLD](./projects/iag-cargo-portal/LLD.md) · [Flows](./projects/iag-cargo-portal/FLOWS.md) |
-| **[Retaint](./projects/retaint/)** 📣 | *(case study)* Multi-tenant **omnichannel marketing-automation** platform — broadcast + event-triggered automations across email/SMS/WhatsApp/push/RCS/chat, segmentation & revenue analytics, moving millions of messages. | Play Framework · React · Python (Celery) · PostgreSQL · Redis · Cassandra · MongoDB | [README](./projects/retaint/README.md) · [HLD](./projects/retaint/HLD.md) · [LLD](./projects/retaint/LLD.md) · [Flows](./projects/retaint/FLOWS.md) |
+| **[Retaint](./projects/retaint/)** 📣 | *(side project)* Multi-tenant **omnichannel marketing-automation** platform — broadcast + event-triggered automations across email/SMS/WhatsApp/push/RCS/chat, segmentation & revenue analytics. | Play Framework · React · Python (Celery) · PostgreSQL · Redis · Cassandra · MongoDB | [README](./projects/retaint/README.md) · [HLD](./projects/retaint/HLD.md) · [LLD](./projects/retaint/LLD.md) · [Flows](./projects/retaint/FLOWS.md) |
 | **[Vibe](./projects/vibe/)** | Three-sided emotional-wellness platform with a one-way **privacy wall** — individuals log emotions & get matched; businesses only ever see k-anonymized aggregates. | Java 21 · Spring Boot · React PWA · FastAPI ML · Postgres (2-schema) · Redis event bus | [README](./projects/vibe/README.md) · [HLD](./projects/vibe/HLD.md) · [LLD](./projects/vibe/LLD.md) · [Flows](./projects/vibe/FLOWS.md) |
 | **[Linder](./projects/linder/)** | Tinder-style **job matching** — swipe, mutual-match, real-time chat. Mobile app + Spring Cloud microservices. | React Native/Expo · Spring Cloud (Gateway + Eureka + 5 services) · Postgres/Mongo/Redis/RabbitMQ · FCM | [README](./projects/linder/README.md) · [HLD](./projects/linder/HLD.md) · [LLD](./projects/linder/LLD.md) · [Flows](./projects/linder/FLOWS.md) |
 | **[InfluenceHub](./projects/influencehub/)** | Influencer-marketing **marketplace** with **watermark-until-paid** escrow and GST invoicing. Microservices. | Java 17 · Spring Boot (3 services) · React · PostgreSQL (DB-per-service) · Redis · Cloudinary | [README](./projects/influencehub/README.md) · [HLD](./projects/influencehub/HLD.md) · [LLD](./projects/influencehub/LLD.md) · [Flows](./projects/influencehub/FLOWS.md) |
@@ -67,7 +67,7 @@ infrastructure details deliberately omitted.
 |---|---|---|---|
 | Senior Software Engineer | Coforge — IAG Cargo (British Airways) | May 2025 – Nov 2026 | **[IAG Cargo Portal](./projects/iag-cargo-portal/)** — legacy→serverless AWS microservices modernization; booking/tracking/pricing services; Track & Trace with AWS Glue + DynamoDB |
 | Software Engineer | Quara AI Tech | Sep 2024 – Mar 2025 | DynamoDB → PostgreSQL migration (−60% cost); hybrid physical/online auction module |
-| Software Engineer | Shiprocket | Feb 2022 – Sep 2024 | **[Retaint](./projects/retaint/)** omnichannel marketing-automation platform; Kafka broadcast redesign (−60% failures); Shopify-webhook automation |
+| Software Engineer | Shiprocket | Feb 2022 – Sep 2024 | Omnichannel marketing-automation platform; Kafka broadcast redesign (−60% failures); Shopify-webhook automation |
 | Software Engineer | Daffodil Software | Jan 2021 – Feb 2022 | Spring Boot + Hibernate REST APIs for the PAS digital platform |
 
 **B.Tech, Information Technology — AKTU, Greater Noida (2017–2021)**
