@@ -4,6 +4,12 @@
 
 Sign in once at the hub, then launch any game from a home-screen card. Three games ship today — Tambola (Housie), Never Have I Ever, and Truth or Dare — all sharing a single auth, lobby, and realtime layer. Hosts drive the game from a laptop/TV screen while players join from their phones; every meaningful decision (which number is drawn, whether a prize claim is valid, what question comes next) is made and verified on the server.
 
+## Demo
+
+[![Watch the Party Games demo walkthrough](../../docs/media/inhousegames.jpg)](https://srajan1234.github.io/portfolio/media/inhousegames.mp4)
+
+*Click to watch the walkthrough video (about a minute). It is recreated from the application's source with sample data.*
+
 ## Overview
 
 Party Games is a full-stack application: a **React 19 + TypeScript** single-page app talking to a **Spring Boot 3.4 / Java 17** REST API backed by **PostgreSQL 16**. Live game state is pushed to every connected screen over **Server-Sent Events (SSE)** — not WebSocket — via an in-memory, per-game emitter registry. Question content for the two conversation games is generated on demand by the **Anthropic Claude API**, with a hardcoded fallback pool so the games work offline.
