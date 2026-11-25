@@ -6,6 +6,12 @@
 
 ---
 
+## Demo
+
+[![Watch the Retaint demo video](../../docs/media/retaint.jpg)](https://srajan1234.github.io/portfolio/media/retaint.mp4)
+
+*Click to watch the product video (about 45 seconds), shown with sample data.*
+
 ## Context & Problem
 
 Direct-to-consumer merchants run their customer lifecycle across a fragmented set of tools: one product for email, another for SMS, a third for on-site popups, and yet more for analytics and support. Each silo has its own audience list, its own reporting, and no shared view of the customer.
