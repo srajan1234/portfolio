@@ -696,6 +696,8 @@
 <script>
 (function () {
   var REPO = "https://github.com/srajan1234/portfolio/tree/main/projects/";
+  var DESIGN_REPOS={ "vibe":"vibe-design","linder":"linder-design","influencehub":"influencehub-design","cartag":"cartag-design","snapads-pro":"snapads-pro-design","inhousegames":"party-games-design","trading-assistant":"trading-assistant-design" };
+  function docUrl(slug,file){ var r=DESIGN_REPOS[slug]; if(r) return "https://github.com/srajan1234/"+r+(file?"/blob/main/"+file:""); return REPO+slug+(file?"/"+file:""); }
   var marquee = ["Java","Spring Boot","Microservices","AWS Lambda","Kafka","PostgreSQL","MongoDB","Cassandra","Redis","DynamoDB","EventBridge","Docker","Kubernetes","Spring Cloud","RabbitMQ","Terraform"];
   var stats = [ {n:"5+", k:"Years Experience"}, {n:"9", k:"Systems Designed"}, {n:"60%", k:"Infra Cost Cut"}, {n:"Millions", k:"Messages Delivered"} ];
   var projects = [
@@ -849,7 +851,7 @@
     var chips=p.chips.map(function(s){return '<span class="chip">'+s+'</span>';}).join("");
     var badge=p.badge?'<span class="pbadge">'+p.badge+'</span>':"";
     var note=p.caseStudy?'<p class="note">Sanitized case study — internal identifiers &amp; credentials omitted.</p>':"";
-    var links='<div class="plinks-hint">dive into the design</div><div class="plinks flash" id="docLinks" style="margin-top:0">'+(videos[p.slug]?'<a class="doc-main vid-btn" href="media/'+p.slug+'.mp4" data-video>▶ demo video</a>':'')+'<a class="doc-main" href="'+REPO+p.slug+'" target="_blank" rel="noopener">full design docs ↗</a><a href="'+REPO+p.slug+'/HLD.md" target="_blank" rel="noopener">HLD</a><a href="'+REPO+p.slug+'/LLD.md" target="_blank" rel="noopener">LLD</a><a href="'+REPO+p.slug+'/FLOWS.md" target="_blank" rel="noopener">flows</a></div>';
+    var links='<div class="plinks-hint">dive into the design</div><div class="plinks flash" id="docLinks" style="margin-top:0">'+(videos[p.slug]?'<a class="doc-main vid-btn" href="media/'+p.slug+'.mp4" data-video>▶ demo video</a>':'')+'<a class="doc-main" href="'+docUrl(p.slug)+'" target="_blank" rel="noopener">full design docs ↗</a><a href="'+docUrl(p.slug,"HLD.md")+'" target="_blank" rel="noopener">HLD</a><a href="'+docUrl(p.slug,"LLD.md")+'" target="_blank" rel="noopener">LLD</a><a href="'+docUrl(p.slug,"FLOWS.md")+'" target="_blank" rel="noopener">flows</a></div>';
     var details='<p class="md-desc">'+p.desc+'</p><p class="proj-hl">'+p.hl+'</p><div class="chips">'+chips+'</div>'+schematic(p.arch)+links+note;
     var sub=demo[p.slug], _db=localStorage.getItem("demoBase"); if(_db && !/^https?:\/\//i.test(_db)) _db=""; var base=(_db||DEFAULT_DEMO).replace(/\/+$/,""), body, liveTag="";
     if(sub){
