@@ -266,18 +266,19 @@
   @media (max-width: 780px) { .modal-grid { grid-template-columns: 1fr; } }
   .md-left { min-width: 0; }
   .md-right { min-width: 0; }
-  .md-right.has-reel { display: flex; flex-direction: column; gap: 12px; }
-  .md-right.has-reel .browser { height: auto; flex: 1 1 auto; }
   .reel-hd { display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-  .reel-nav { display: flex; gap: 6px; }
+  .reel-nav { display: inline-flex; gap: 6px; vertical-align: middle; margin-left: 6px; }
+  #demos { padding-top: 26px; padding-bottom: 10px; }
+  .plinks a.vid-btn { background: var(--live); color: #06120b; border-color: var(--live); }
   .reel-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line2); background: #0c0c0e; color: var(--text, #eee); font-size: 1rem; line-height: 1; cursor: pointer; }
   .reel-btn:hover { border-color: var(--live); color: var(--live); }
   .reel-track { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .reel-track::-webkit-scrollbar { display: none; }
-  .reel-item { flex: 0 0 64%; margin: 0; scroll-snap-align: start; border: 1px solid var(--line2); border-radius: 10px; overflow: hidden; background: #000; }
+  .reel-item { flex: 0 0 44%; margin: 0; scroll-snap-align: start; border: 1px solid var(--line2); border-radius: 10px; overflow: hidden; background: #000; }
   .reel-item video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; }
-  .reel-item figcaption { font-family: var(--mono); font-size: .66rem; color: var(--muted); padding: 6px 9px; background: #0c0c0e; }
-  .reel-item figcaption b { color: var(--live); font-weight: 500; }
+  .reel-item figcaption { display: flex; justify-content: space-between; gap: 10px; font-family: var(--mono); font-size: .7rem; color: var(--text, #eee); padding: 8px 11px; background: #0c0c0e; }
+  .reel-item figcaption i { font-style: normal; color: var(--muted); }
+  .reel-item figcaption a { color: var(--live); text-decoration: none; white-space: nowrap; }
   @media (max-width: 720px) { .reel-item { flex-basis: 84%; } }
   .browser { border: 1px solid var(--line2); border-radius: 12px; overflow: hidden; background: #0c0c0e; display: flex; flex-direction: column; min-height: 380px; height: 100%; }
   .browser-bar { display: flex; align-items: center; gap: 7px; padding: 9px 11px; background: #141416; border-bottom: 1px solid var(--line); }
@@ -627,6 +628,13 @@
 
   <div class="marquee"><div class="track" id="track"></div></div>
 
+  <section id="demos">
+    <div class="wrap">
+      <div class="sec-head reveal"><h2>Demo Walkthroughs</h2><span class="lbl">// one minute each · <span class="reel-nav"><button type="button" class="reel-btn" data-dir="-1" aria-label="Previous video">‹</button><button type="button" class="reel-btn" data-dir="1" aria-label="Next video">›</button></span></span></div>
+      <div class="reel" id="demoReel"></div>
+    </div>
+  </section>
+
   <section id="about">
     <div class="wrap">
       <div class="stats reveal" id="stats"></div>
@@ -823,33 +831,32 @@
     if(v) localStorage.setItem("demoBase",v); else localStorage.removeItem("demoBase");
     if(currentIdx!=null) openModal(currentIdx);
   };
-  function reel(cur){
-    var order=projects.filter(function(q){return videos[q.slug];});
-    order.sort(function(a,b){return (a.slug===cur?-1:0)-(b.slug===cur?-1:0);});
-    if(!order.length) return "";
-    var items=order.map(function(q){
-      return '<figure class="reel-item"><video muted loop playsinline controls preload="none" poster="media/'+q.slug+'.jpg" src="media/'+q.slug+'.mp4"></video><figcaption>'+q.name+(q.slug===cur?' <b>· this project</b>':'')+'</figcaption></figure>';
+  function buildReel(){
+    var host=document.getElementById("demoReel"); if(!host) return;
+    var items=projects.map(function(q,i){
+      if(!videos[q.slug]) return "";
+      return '<figure class="reel-item"><video muted loop playsinline controls preload="none" poster="media/'+q.slug+'.jpg" src="media/'+q.slug+'.mp4"></video><figcaption><span>'+q.name+' <i>· '+q.cat+'</i></span><a href="#work" data-open="'+i+'">details →</a></figcaption></figure>';
     }).join("");
-    return '<div class="reel"><div class="reel-hd"><span>demo walkthroughs</span><span class="reel-nav"><button type="button" class="reel-btn" data-dir="-1" aria-label="Previous video">‹</button><button type="button" class="reel-btn" data-dir="1" aria-label="Next video">›</button></span></div><div class="reel-track">'+items+'</div></div>';
-  }
-  function wireReel(){
-    var track=mroot.querySelector(".reel-track"); if(!track) return;
-    mroot.querySelectorAll(".reel-btn").forEach(function(b){
+    host.innerHTML='<div class="reel-track">'+items+'</div>';
+    var track=host.querySelector(".reel-track");
+    host.querySelectorAll("[data-open]").forEach(function(a){ a.addEventListener("click", function(e){ e.preventDefault(); openModal(Number(a.getAttribute("data-open"))); }); });
+    document.querySelectorAll("#demos .reel-btn").forEach(function(b){
       b.addEventListener("click", function(){ var it=track.querySelector(".reel-item"); track.scrollBy({left:(it.offsetWidth+10)*Number(b.getAttribute("data-dir")), behavior:"smooth"}); });
     });
     if(!("IntersectionObserver" in window)) return;
     var io=new IntersectionObserver(function(es){
       es.forEach(function(e){ var v=e.target; if(e.isIntersecting){ var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){}); } else v.pause(); });
-    },{root:track, threshold:0.35});
+    },{threshold:0.5});
     track.querySelectorAll("video").forEach(function(v){ io.observe(v); });
   }
+  buildReel();
   function openModal(i){
     currentIdx=i;
     var p=projects[i], t=themes[p.slug]||{c1:"#8a8a8a",c2:"#555",icon:"◆"};
     var chips=p.chips.map(function(s){return '<span class="chip">'+s+'</span>';}).join("");
     var badge=p.badge?'<span class="pbadge">'+p.badge+'</span>':"";
     var note=p.caseStudy?'<p class="note">Sanitized case study — internal identifiers &amp; credentials omitted.</p>':"";
-    var links='<div class="plinks-hint">dive into the design</div><div class="plinks flash" id="docLinks" style="margin-top:0"><a class="doc-main" href="'+REPO+p.slug+'" target="_blank" rel="noopener">full design docs ↗</a><a href="'+REPO+p.slug+'/HLD.md" target="_blank" rel="noopener">HLD</a><a href="'+REPO+p.slug+'/LLD.md" target="_blank" rel="noopener">LLD</a><a href="'+REPO+p.slug+'/FLOWS.md" target="_blank" rel="noopener">flows</a></div>';
+    var links='<div class="plinks-hint">dive into the design</div><div class="plinks flash" id="docLinks" style="margin-top:0">'+(videos[p.slug]?'<a class="doc-main vid-btn" href="media/'+p.slug+'.mp4" data-video>▶ demo video</a>':'')+'<a class="doc-main" href="'+REPO+p.slug+'" target="_blank" rel="noopener">full design docs ↗</a><a href="'+REPO+p.slug+'/HLD.md" target="_blank" rel="noopener">HLD</a><a href="'+REPO+p.slug+'/LLD.md" target="_blank" rel="noopener">LLD</a><a href="'+REPO+p.slug+'/FLOWS.md" target="_blank" rel="noopener">flows</a></div>';
     var details='<p class="md-desc">'+p.desc+'</p><p class="proj-hl">'+p.hl+'</p><div class="chips">'+chips+'</div>'+schematic(p.arch)+links+note;
     var sub=demo[p.slug], _db=localStorage.getItem("demoBase"); if(_db && !/^https?:\/\//i.test(_db)) _db=""; var base=(_db||DEFAULT_DEMO).replace(/\/+$/,""), body, liveTag="";
     if(sub){
@@ -861,7 +868,7 @@
       var pop=base?'<a class="pop" href="'+full+'" target="_blank" rel="noopener">open ↗</a>':'<span class="pop set" onclick="setDemoBase()">connect</span>';
       var browser='<div class="browser"><div class="browser-bar"><span class="bdot r"></span><span class="bdot y"></span><span class="bdot g"></span><span class="burl">'+(base?host+sub:"not connected")+'</span>'+pop+'</div><div class="browser-view">'+view+'</div></div>';
       liveTag=base?'<span class="live-tag on">● live</span>':videos[p.slug]?'<span class="live-tag on">▶ demo video</span>':'<span class="live-tag off">demo on request</span>';
-      body='<div class="modal-grid"><div class="md-left">'+details+'</div><div class="md-right has-reel">'+browser+reel(p.slug)+'</div></div>';
+      body='<div class="modal-grid"><div class="md-left">'+details+'</div><div class="md-right">'+browser+'</div></div>';
     } else { body=details; }
     mroot.innerHTML='<div class="modal'+(sub?' has-demo':'')+'" style="--c1:'+t.c1+';--c2:'+t.c2+'">'+
       '<button class="modal-close" aria-label="Close">✕</button>'+
@@ -871,7 +878,13 @@
     ov.classList.add("open"); document.body.classList.add("noscroll");
     mroot.querySelector(".modal-close").addEventListener("click", closeModal);
     mroot.querySelector(".modal").addEventListener("click", function(e){ e.stopPropagation(); });
-    wireReel();
+    var vb=mroot.querySelector("[data-video]");
+    if(vb) vb.addEventListener("click", function(e){
+      e.preventDefault();
+      var bv=mroot.querySelector(".browser-view"), bu=mroot.querySelector(".burl");
+      if(bv) bv.innerHTML='<video controls autoplay playsinline poster="media/'+p.slug+'.jpg" src="media/'+p.slug+'.mp4" style="position:absolute;inset:0;width:100%;height:100%;background:#000;object-fit:contain"></video>';
+      if(bu) bu.textContent="demo video · "+p.name;
+    });
   }
   function closeModal(){ mroot.querySelectorAll("video").forEach(function(v){ v.pause(); }); ov.classList.remove("open"); document.body.classList.remove("noscroll"); }
   ov.addEventListener("click", closeModal);
