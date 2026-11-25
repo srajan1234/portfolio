@@ -43,7 +43,7 @@ Base path `/api`. Bearer = owner JWT; Public = no auth (scanner/emergency).
 | POST | `/scan/validate` | Public | Check session validity + remaining seconds |
 | POST | `/scan/log` | Public | Append contact action to audit trail |
 | POST | `/contact/whatsapp` | Session | Log + return `wa.me` deep link, alert owner |
-| POST | `/contact/call` | Session | Exotel masked call (call limit + DND checks) |
+| POST | `/contact/call` | Session | Owner call (call limit + DND checks; Exotel masking integrated, not yet enabled) |
 | POST | `/emergency/{identifier}` | Public | SOS alert → owner + emergency contact |
 | POST | `/emergency/hitandrun/{identifier}` | Public | Hit-and-run report with photo evidence |
 | POST | `/safety/block` | Bearer | Block a device (level 1–4) |
@@ -154,7 +154,7 @@ Also present: `message_board`, `orders`, `fastag_transactions`, `service_records
 - **JWT** — `JwtUtil` builds tokens with jjwt 0.12.6, HMAC-signed via `Keys.hmacShaKeyFor(secret)`; claims are `sub`/`phone`/`role`, expiry config-driven (~30 days per contract). `JwtFilter` extracts and verifies the bearer token per request and populates the security context; invalid/expired tokens fall through to an anonymous context. `SecurityConfig` marks scanner, emergency, dealer, and health routes public.
 - **OTP flow** — 6-digit code, 10-minute expiry, generated with `SecureRandom`, sent through Fast2SMS (OTP route). Dev profile returns the code inline for testing and skips real delivery. *Known gap:* no per-OTP attempt lockout yet, and the store is in-memory (both tracked as blockers).
 - **Payment integrity** — Razorpay callbacks are verified server-side with an HMAC-SHA256 signature check before an order is marked PAID/CONFIRMED.
-- **Least-exposure projections** — public DTOs never carry owner phone, engine/chassis numbers, or emergency-contact details.
+- **Least-exposure projections** — the scan-session vehicle projection never carries owner phone, engine/chassis numbers, or emergency-contact details.
 
 ## Notable Patterns
 

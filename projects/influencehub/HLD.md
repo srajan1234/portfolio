@@ -7,7 +7,7 @@ InfluenceHub is a two-sided influencer-marketing marketplace for the Indian mark
 **admins** keep the marketplace safe. The central design challenge is *trust across an
 untrusted exchange*: an influencer must prove the work is done before payment, while the
 brand must not be able to walk away with the finished asset without paying. InfluenceHub
-solves this with an **escrow + watermark** model backed by a media pipeline.
+solves this with a **watermark-until-paid** model backed by a media pipeline.
 
 Design goals:
 
@@ -57,8 +57,8 @@ graph TD
 | Auth & users | Signup/login, JWT issuance, profiles (brand & influencer) |
 | Campaigns | Project (campaign) CRUD, influencer search, multi-influencer invites |
 | Negotiation | Brand offer / influencer counter-offer, agreement, history |
-| Deliverables | Submission, revision requests, approval, escrow content linkage |
-| Payments | Escrow processing, platform fee + GST, invoice generation |
+| Deliverables | Submission, revision requests, approval, content linkage |
+| Payments | Payment processing, platform fee + GST, invoice generation |
 | Messaging | Direct brand↔influencer messages scoped to a project |
 | Admin | Verification, disputes, campaign moderation, dashboards, audit logs |
 | Integration | Calls Media Service over HTTP; publishes notification events to Redis |
@@ -125,8 +125,8 @@ integrate through APIs/events, keeping ownership boundaries clean.
   a thin `MediaServiceClient` (upload, fetch metadata, generate download tokens, delete).
 - **Real-time notifications** — a single published event drives persistence, a WebSocket
   push, *and* an email, decoupling producers from delivery channels.
-- **Escrow** — payment is only allowed once deliverables are approved; the content
-  protection flag and release timestamp on a deliverable govern original-asset access.
+- **Payment gating** — payment is only allowed once deliverables are approved; the content
+  protection flag and release timestamp on a deliverable are modelled for original-asset access.
 
 ## Key Design Decisions & Trade-offs
 
@@ -136,9 +136,9 @@ stall campaign/payment operations, and each can scale independently.
 *Trade-off:* added operational surface and network hops (e.g. the Main API's HTTP call
 to the Media Service) versus a simpler monolith.
 
-**Watermark-until-paid escrow.** Instead of trusting either party, the platform delivers
-a watermarked preview and only mints an ORIGINAL download token after payment settles.
-This makes the trust guarantee a property of the *media pipeline*, not the UI.
+**Watermark-until-paid release.** Instead of trusting either party, the platform shows
+a watermarked preview and opens the original once the project is fully paid.
+Watermarking is done server-side in the media service; the release switch currently lives in the client.
 *Trade-off:* server-side watermarking and token issuance add processing and storage cost
 per asset, but remove the marketplace's core trust risk.
 

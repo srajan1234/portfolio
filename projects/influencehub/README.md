@@ -1,6 +1,6 @@
 # InfluenceHub
 
-**A microservices influencer-marketing marketplace connecting Indian brands with creators — with escrow-protected content that stays watermarked until the brand pays.**
+**A microservices influencer-marketing marketplace connecting Indian brands with creators — with deliverables shown as watermarked previews until the brand pays.**
 
 ## Demo
 
@@ -13,7 +13,7 @@
 InfluenceHub is a full-stack marketplace where brands run marketing campaigns and
 influencers monetize their reach. Brands create campaigns, discover and invite
 influencers, negotiate per-deliverable pricing, review submitted content, and release
-payment through an escrow model. Influencers submit content that is delivered as a
+payment through a watermark-until-paid model. Influencers submit content that is delivered as a
 **watermarked preview** and only unlocks to the original asset once payment settles —
 solving the classic "show the work before you get paid" trust problem that plagues
 creator marketplaces.
@@ -26,13 +26,13 @@ logging on top.
 
 ## Key Features
 
-- **Escrow content protection** — deliverables ship watermarked; the original is
-  gated behind time-limited, single-use download tokens released only after payment.
+- **Watermarked previews** — deliverables are shown as watermarked previews; the
+  original opens once the project is fully paid.
 - **Campaign lifecycle** — brands create campaigns, search/filter influencers by
   category, follower count and engagement, and invite multiple creators per campaign.
 - **Two-sided price negotiation** — brand offer → influencer counter-offer → agreement,
   with a full negotiation history trail per deliverable.
-- **GST-aware payments** — escrow payment with platform fee and GST breakdown, plus
+- **GST-aware payments** — payment with platform fee and GST breakdown, plus
   auto-generated invoices (Razorpay integration fields wired in).
 - **Real-time + email notifications** — a Redis-driven fan-out delivers in-app
   WebSocket (STOMP/SockJS) notifications and SendGrid emails from a single event.
@@ -90,8 +90,8 @@ accounts for the brand, influencer, and admin roles.
 
 - **Database-per-service** boundaries — no shared schema, no cross-service joins;
   services integrate only through explicit APIs and events.
-- **Watermark-until-paid escrow** implemented as a real media pipeline (server-side
-  watermarking + token-gated original download), not a UI stub.
+- **Watermark-until-paid release** with server-side watermarking in the media
+  service.
 - **Event-driven notifications** — one published event fans out to persistence,
   live WebSocket push, and templated email with zero coupling back to the sender.
 - **Stateless JWT** verified independently by every service, enabling horizontal

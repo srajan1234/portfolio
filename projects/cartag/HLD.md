@@ -6,7 +6,7 @@ CarTag is a consumer safety platform for Indian vehicle owners. The product prob
 
 Design goals:
 
-- **Privacy invariant** — the owner's phone number is never exposed to a scanner, on any code path.
+- **Least exposure** — a scan reveals only safe vehicle fields; the owner's number is released only at the contact step of a valid session.
 - **Proximity + time bounded access** — a scan grants a short-lived, location-gated session, not standing access.
 - **Abuse resistance** — fingerprinting, rate limiting, multi-level blocking, and a honeypot for known-bad devices.
 - **Emergency override** — accident / hit-and-run reporting must always succeed, even with no session and no auth.
@@ -42,7 +42,7 @@ graph TD
     SVC --> VAH[Vahan - RC auto-fetch]
     SVC --> CLD[Cloudinary - images/docs]
     SVC --> RZP[Razorpay - payments]
-    SVC --> EXO[Exotel - masked calling]
+    SVC --> EXO[Exotel - call masking]
     SVC --> FCM[Firebase FCM - push]
 ```
 
@@ -71,7 +71,7 @@ graph TD
 |---------|---------|-------|
 | Fast2SMS | OTP delivery + emergency/reminder SMS | OTP route; dev profile short-circuits delivery and returns the code for testing. |
 | Vahan | RC auto-fetch on registration | `GET /api/vehicle/lookup/{plate}`; 24h cache; graceful fallback to manual entry on failure (502). |
-| Exotel | Masked voice calling | Scanner → Exotel → owner; neither party sees the other's number. Guarded by call limit + DND window. |
+| Exotel | Call masking | Integration for bridged calls (scanner → Exotel → owner); wired in but not yet enabled, so calls currently use the dialer. Guarded by call limit + DND window. |
 | Cloudinary | Media storage/CDN | Photos, evidence, documents. |
 | Razorpay | Sticker order payments | Server creates order, verifies HMAC-SHA256 payment signature on callback. |
 | Firebase FCM | Owner push notifications | 9 typed notification methods; currently stubbed pending Admin SDK wiring. |
@@ -82,9 +82,9 @@ Secrets for all providers are injected via environment variables / Spring profil
 
 - **Authentication** — stateless JWT. `JwtUtil` HMAC-signs tokens carrying `sub` (userId), `phone`, and `role`; expiry is config-driven (`cartag.jwt.expiration-ms`, ~30 days per the API contract). `JwtFilter` validates the bearer token on protected routes; scanner/emergency routes are intentionally public.
 - **Geofencing** — `GeoUtil.distanceMeters()` implements the Haversine formula (Earth radius 6,371,000 m) over `BigDecimal` lat/lng. The 500m gate is the default; a per-vehicle `max_contact_distance` override wins when set. Null coordinates fail safe (treated as infinite distance).
-- **Rate limiting** — layered: 3 OTPs/phone/hour, and 3 scan sessions/hour per device-fingerprint per vehicle, plus a 1-call-per-session cap on masked calling.
+- **Rate limiting** — layered: 3 OTPs/phone/hour, and 3 scan sessions/hour per device-fingerprint per vehicle, plus a 1-call-per-session cap on calling.
 - **Device fingerprinting** — the client sends a FingerprintJS hash with every scan; it is the primary identity for rate limiting, blocking, and harassment detection (no login required for scanners).
-- **Privacy / masked contact** — the public vehicle projection returns only safe fields and honors `show_owner_name`, `contact_mode`, `allow_calling`, and `safety_mode`. Contact numbers are resolved server-side and only ever leave the server as a `wa.me` deep link or an Exotel call SID.
+- **Privacy / contact hand-off** — the public vehicle projection returns only safe fields and honors `show_owner_name`, `contact_mode`, `allow_calling`, and `safety_mode`. Contact numbers are resolved server-side and leave the server only at the contact step, as a `wa.me` deep link or a dial link (an Exotel call SID once masking is enabled).
 - **Background schedulers** — (1) document reminders daily 09:00 IST at 30/15/7/1-day thresholds with idempotent sent-flags; (2) hourly FasTag balance check with auto-recharge; (3) harassment detection every 5 min; (4) visitor overstay every 30 min.
 - **Auditability** — `scan_logs` is an append-only trail of every scan and contact action (including honeypot attempts recorded as `HONEYPOT_*`), which is also the raw feed for harassment analytics.
 

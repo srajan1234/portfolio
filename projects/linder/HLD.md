@@ -24,7 +24,7 @@ graph TD
         GW["API Gateway :8080<br/>Spring Cloud Gateway<br/>JWT · Redis rate limit · CORS · WS proxy"]
     end
 
-    subgraph Platform["Service Mesh (Eureka-registered)"]
+    subgraph Platform["Microservices (Eureka-registered)"]
         EUR["Discovery Server :8761<br/>Netflix Eureka"]
         US["user-service :8081"]
         JS["job-service :8082"]

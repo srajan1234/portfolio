@@ -77,7 +77,7 @@ sequenceDiagram
     Influencer->>API: POST /api/influencer/opportunities/{id}/counter
     API->>API: negotiation_status BRAND_OFFERED → INFLUENCER_COUNTERED,<br/>append negotiation_history
     API->>Redis: publish (NEGOTIATION_UPDATE) → brand notified
-    Note over Influencer,MED: Content submission (escrow-protected)
+    Note over Influencer,MED: Content submission (watermarked preview)
     Influencer->>FE: Upload deliverable file
     FE->>MED: POST /api/media/upload (isProtected=true)
     MED->>Cloudinary: store original
@@ -94,7 +94,7 @@ the original in Cloudinary and generates a **watermarked preview**; the returned
 UUID is attached to the deliverable via `submit`. The deliverable is marked `SUBMITTED`
 with `is_content_protected = true`, so the brand can review only the watermarked version.
 
-## 4. Escrow Payment → Original Media Unlock + Invoice
+## 4. Payment → Original Media Unlock + Invoice
 
 ```mermaid
 sequenceDiagram
@@ -107,7 +107,7 @@ sequenceDiagram
     Brand->>FE: Review watermarked deliverable
     FE->>API: PUT /api/brand/deliverables/{id}/approve
     API->>API: deliverable status APPROVED
-    Brand->>FE: Pay influencer (escrow)
+    Brand->>FE: Pay influencer
     FE->>API: POST /api/payments/process
     API->>API: Guard: all deliverables APPROVED
     API->>API: Compute base + platform fee + GST; status COMPLETED

@@ -147,7 +147,7 @@ are by ID reference, not enforced foreign keys across databases.)*
 
 ## Key Logic
 
-**Escrow payment → media unlock.** A `Deliverable` carries `content_media_id`,
+**Payment → media unlock.** A `Deliverable` carries `content_media_id`,
 `is_content_protected` (default true) and `content_released_at`. While protected, the
 Media Service serves only the **watermarked preview**; the Main API guards
 `POST /api/payments/process` so payment is allowed only when the campaign's deliverables

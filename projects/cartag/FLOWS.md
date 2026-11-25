@@ -58,7 +58,7 @@ sequenceDiagram
 
 **Walkthrough.** Registration starts with a public Vahan lookup that pre-fills make/model/year/fuel and document expiries, cached 24h. If Vahan fails the UI degrades to manual entry (502 with a friendly message) — the auto-fetch is a convenience, never a hard dependency. On submit, the API creates the `vehicle`, its paired `contacts` (privacy) row, and a unique 12-character `qr_token` that becomes the permanent public identifier. A duplicate plate returns 409.
 
-## 3. Core Flow — QR Scan to Masked Contact
+## 3. Core Flow — QR Scan to Owner Contact
 
 ```mermaid
 sequenceDiagram
@@ -91,10 +91,10 @@ sequenceDiagram
         API->>DB: validate session, log WHATSAPP, alert owner (FCM)
         API-->>SPA: { whatsappUrl: wa.me/91XXXXXXXXXX }
         SPA->>S: open WhatsApp deep link
-    else Masked call
+    else Call
         SPA->>API: POST /contact/call { sessionToken }
         API->>API: call-limit, allow_calling, DND-window checks
-        API->>EXO: bridge scanner <-> owner (numbers hidden)
+        API->>EXO: bridge scanner <-> owner (once masking is enabled, else a dial link is returned)
         API-->>SPA: { callId }
     end
 ```

@@ -1,6 +1,6 @@
 # CarTag
 
-> A privacy-first vehicle QR sticker platform — let anyone reach a vehicle owner without ever exposing the owner's phone number.
+> A vehicle QR sticker platform — let anyone reach a vehicle's owner through a geofenced, time-limited scan session.
 
 ## Demo
 
@@ -10,11 +10,11 @@
 
 ## Overview
 
-CarTag gives every vehicle a permanent physical QR sticker. When someone scans it, they can contact the owner (WhatsApp deep link or Exotel masked call) through controlled, time-limited access — the owner's real number is never revealed. Every contact path is safety-gated: the scanner must be physically near the vehicle, sessions self-destruct after five minutes, and abusive devices are silently trapped. Phase 2 extends the same identity + safety core into gated-community management (guards, visitors, parking) and FasTag toll recharge.
+CarTag gives every vehicle a permanent physical QR sticker. When someone scans it, they can contact the owner (WhatsApp deep link or a call) through controlled, time-limited access. Every contact path is safety-gated: the scanner must be physically near the vehicle, sessions self-destruct after five minutes, and abusive devices are silently trapped. Phase 2 extends the same identity + safety core into gated-community management (guards, visitors, parking) and FasTag toll recharge.
 
 ## Key Features
 
-- **Anonymous owner contact** — WhatsApp deep links and Exotel masked calling; the scanner and owner never see each other's number.
+- **Owner contact** — WhatsApp deep links and calling from a scan session; Exotel call masking is integrated but not yet switched on.
 - **500m geofence gate** — Haversine distance check blocks contact unless the scanner is near the parked vehicle.
 - **Ephemeral scan sessions** — 5-minute TTL, max 3 sessions/hour per device per vehicle, enforced server-side.
 - **Device fingerprinting + honeypot blocking** — FingerprintJS identities feed a 4-level blocking system; blocked devices receive a convincing *fake* session and are silently logged.
@@ -35,7 +35,7 @@ CarTag gives every vehicle a permanent physical QR sticker. When someone scans i
 | Auth | JWT (jjwt 0.12.6, HMAC-signed) |
 | Database | PostgreSQL (Supabase target), Flyway migrations, HikariCP |
 | QR / Media | ZXing 3.5.3, Cloudinary 1.38 |
-| External APIs | Fast2SMS (OTP/SMS), Vahan (RC data), Exotel (masked calls), Razorpay (payments), FCM (push) |
+| External APIs | Fast2SMS (OTP/SMS), Vahan (RC data), Exotel (call masking, integrated), Razorpay (payments), FCM (push) |
 | Deploy | Railway (backend, Docker/Nixpacks), Vercel (frontend) |
 
 ## Architecture at a Glance
@@ -46,7 +46,7 @@ graph TD
     API --> DB[(PostgreSQL<br/>18 tables)]
     API --> SMS[Fast2SMS<br/>OTP + SMS]
     API --> VAHAN[Vahan RC lookup]
-    API --> EXO[Exotel<br/>masked calls]
+    API --> EXO[Exotel<br/>call masking]
     API --> CLD[Cloudinary<br/>media]
     API --> RZP[Razorpay<br/>payments]
     API --> FCM[Firebase FCM<br/>push]
@@ -63,7 +63,7 @@ graph TD
 
 ## Highlights
 
-- **Privacy as a hard invariant** — no endpoint ever returns the owner's phone; contact is always brokered server-side through deep links or masked calling.
+- **Least-exposure scan response** — the scan response carries only safe vehicle fields and never the owner's phone; the number is handed over only at the contact step, after session, block-list and limit checks.
 - **Defense-in-depth against abuse** — geofence + rate limit + fingerprint blocking + a honeypot that wastes an attacker's time instead of tipping them off, all backed by an immutable `scan_logs` audit trail.
 - **Autonomous safety loop** — the harassment scheduler turns raw scan logs into severity-scored suspicious-activity records and auto-blocks, with de-duplicated owner alerts.
 - **Clean layered Spring architecture** — controller → service → repository with typed DTOs, a global exception handler mapping to a stable error-code contract, and config-driven safety thresholds.
