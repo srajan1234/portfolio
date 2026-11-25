@@ -4,6 +4,12 @@
 
 ---
 
+## Demo
+
+[![Watch the SnapAds Pro demo walkthrough](../../docs/media/snapads-pro.jpg)](https://srajan1234.github.io/portfolio/media/snapads-pro.mp4)
+
+*Click to watch the walkthrough video (about a minute). It is recreated from the application's source with sample data.*
+
 ## Overview
 
 SnapAds Pro is a self-serve marketing platform that lets an organization connect its
