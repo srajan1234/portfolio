@@ -2,6 +2,12 @@
 
 > Swipe to get hired — a Tinder-style job-matching platform where seekers and recruiters match, then chat in real time.
 
+## Demo
+
+[![Watch the Linder demo walkthrough](../../docs/media/linder.jpg)](https://srajan1234.github.io/portfolio/media/linder.mp4)
+
+*Click to watch the walkthrough video (about a minute). It is recreated from the application's source with sample data.*
+
 ## Overview
 
 Linder reimagines job discovery as a two-sided swiping experience. Job seekers swipe on postings; recruiters swipe on candidates for specific roles. When both sides swipe right on the same job, a **mutual match** is created and a private, real-time chat channel is unlocked — mirroring the double opt-in model that made dating apps engaging, applied to hiring.

@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kumar Srajan — Backend Engineer</title>
-<meta name="description" content="Senior Software Engineer — Java, Spring Boot, Kafka & AWS serverless microservices. 10 systems with live in-browser demos and full architecture docs.">
+<meta name="description" content="Senior Software Engineer — Java, Spring Boot, Kafka & AWS serverless microservices. 10 systems with demo walkthrough videos and full architecture docs.">
 <link rel="canonical" href="https://srajan1234.github.io/portfolio/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Kumar Srajan">
 <meta property="og:url" content="https://srajan1234.github.io/portfolio/">
 <meta property="og:title" content="Kumar Srajan — Backend Engineer">
-<meta property="og:description" content="Java · Spring Boot · Kafka · AWS serverless microservices. 10 systems with live in-browser demos and full architecture docs (HLD/LLD).">
+<meta property="og:description" content="Java · Spring Boot · Kafka · AWS serverless microservices. 10 systems with demo walkthrough videos and full architecture docs (HLD/LLD).">
 <meta property="og:image" content="https://srajan1234.github.io/portfolio/og.png">
 <meta property="og:image:secure_url" content="https://srajan1234.github.io/portfolio/og.png">
 <meta property="og:image:type" content="image/png">
@@ -19,7 +19,7 @@
 <meta property="og:image:alt" content="Kumar Srajan — Backend Engineer">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Kumar Srajan — Backend Engineer">
-<meta name="twitter:description" content="Java · Spring Boot · Kafka · AWS. 10 systems with live in-browser demos and full architecture docs.">
+<meta name="twitter:description" content="Java · Spring Boot · Kafka · AWS. 10 systems with demo walkthrough videos and full architecture docs.">
 <meta name="twitter:image" content="https://srajan1234.github.io/portfolio/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -799,7 +799,8 @@
   var ov=document.getElementById("modalOv"), mroot=document.getElementById("modalRoot"), currentIdx=null;
   var demo={ "trading-assistant":"/trading","vibe":"/vibe","retaint":"/retaint","influencehub":"/influencehub","cartag":"/cartag","snapads-pro":"/snapads","inhousegames":"/games","linder":"/linder" };
   demo["vibe"]="/vibe-home"; // Vibe card embeds the landing; its buttons route to app/business/insights via the tunnel
-  var DEFAULT_DEMO="https://second-gentleman-dairy-continent.trycloudflare.com"; // live tunnel to local hub; embeds render running apps. Revert to "" when hub/tunnel is off.
+  var DEFAULT_DEMO=""; // tunnel to the local hub is off; demo videos below are shown instead
+  var videos={ "vibe":1,"linder":1,"influencehub":1,"cartag":1,"trading-assistant":1 }; // recorded walkthroughs in media/<slug>.mp4 // live tunnel to local hub; embeds render running apps. Revert to "" when hub/tunnel is off.
   window.setDemoBase=function(){
     var cur=localStorage.getItem("demoBase")||"";
     var v=prompt("Paste your hub's public URL (ngrok / Cloudflare Tunnel), e.g. https://abc123.ngrok-free.app\n\nLeave blank to disconnect.", cur);
@@ -820,12 +821,14 @@
     if(sub){
       var full=base?base+sub+"/":"", host=base?base.replace(/^https?:\/\//,""):"";
       var waDemo="https://wa.me/919506301217?text="+encodeURIComponent("Hi Kumar, I'm on your portfolio and I'd love to see the "+p.name+" demo running live — could you spin it up?");
+      var vid=videos[p.slug]?'<video controls playsinline preload="metadata" poster="media/'+p.slug+'.jpg" src="media/'+p.slug+'.mp4" style="width:100%;height:100%;background:#000;object-fit:contain"></video>':"";
       var view=base
         ? '<iframe src="'+full+'" title="'+p.name+' live" loading="lazy"></iframe>'
+        : vid ? vid
         : '<div class="browser-off"><div class="boff-ico">'+t.icon+'</div><div><b>Demos aren\'t live right now</b><br><span>ping me on WhatsApp and I\'ll spin up '+p.name+' for you in a minute</span></div><a class="wa-demo" href="'+waDemo+'" target="_blank" rel="noopener">▶ Request live demo</a><span class="or">— or —</span><span class="set" onclick="setDemoBase()">connect a tunnel URL →</span></div>';
-      var pop=base?'<a class="pop" href="'+full+'" target="_blank" rel="noopener">open ↗</a>':'<span class="pop set" onclick="setDemoBase()">connect</span>';
-      var browser='<div class="browser"><div class="browser-bar"><span class="bdot r"></span><span class="bdot y"></span><span class="bdot g"></span><span class="burl">'+(base?host+sub:"not connected")+'</span>'+pop+'</div><div class="browser-view">'+view+'</div></div>';
-      liveTag=base?'<span class="live-tag on">● live</span>':'<span class="live-tag off">demo on request</span>';
+      var pop=base?'<a class="pop" href="'+full+'" target="_blank" rel="noopener">open ↗</a>':vid?'<a class="pop" href="media/'+p.slug+'.mp4" target="_blank" rel="noopener">open ↗</a>':'<span class="pop set" onclick="setDemoBase()">connect</span>';
+      var browser='<div class="browser"><div class="browser-bar"><span class="bdot r"></span><span class="bdot y"></span><span class="bdot g"></span><span class="burl">'+(base?host+sub:vid?"recorded walkthrough · "+p.name:"not connected")+'</span>'+pop+'</div><div class="browser-view">'+view+'</div></div>';
+      liveTag=base?'<span class="live-tag on">● live</span>':vid?'<span class="live-tag on">▶ demo video</span>':'<span class="live-tag off">demo on request</span>';
       body='<div class="modal-grid"><div class="md-left">'+details+'</div><div class="md-right">'+browser+'</div></div>';
     } else { body=details; }
     mroot.innerHTML='<div class="modal'+(sub?' has-demo':'')+'" style="--c1:'+t.c1+';--c2:'+t.c2+'">'+

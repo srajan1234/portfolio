@@ -2,6 +2,12 @@
 
 **A three-sided emotional-wellness platform built around a one-way privacy wall: individuals log emotions and get matched; businesses only ever see k-anonymized aggregates.**
 
+## Demo
+
+[![Watch the Vibe demo walkthrough](../../docs/media/vibe.jpg)](https://srajan1234.github.io/portfolio/media/vibe.mp4)
+
+*Click to watch the walkthrough video (about a minute). It is recreated from the application's source with sample data.*
+
 ## Overview
 
 People struggle to notice their own emotional patterns, and the products that could help them often monetize by selling individual data to employers or advertisers. Vibe separates the two concerns with an architectural guarantee: consumers log emotions, discover patterns, and find compatible people, while companies and brands buy only anonymized, aggregate dashboards. Raw individual data physically never crosses into the business side — the only bridge is a batch **Anonymizer** that enforces k-anonymity thresholds before any number reaches an analytics table.

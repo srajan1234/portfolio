@@ -2,6 +2,12 @@
 
 > A privacy-first vehicle QR sticker platform — let anyone reach a vehicle owner without ever exposing the owner's phone number.
 
+## Demo
+
+[![Watch the CarTag demo walkthrough](../../docs/media/cartag.jpg)](https://srajan1234.github.io/portfolio/media/cartag.mp4)
+
+*Click to watch the walkthrough video (about a minute). It is recreated from the application's source with sample data.*
+
 ## Overview
 
 CarTag gives every vehicle a permanent physical QR sticker. When someone scans it, they can contact the owner (WhatsApp deep link or Exotel masked call) through controlled, time-limited access — the owner's real number is never revealed. Every contact path is safety-gated: the scanner must be physically near the vehicle, sessions self-destruct after five minutes, and abusive devices are silently trapped. Phase 2 extends the same identity + safety core into gated-community management (guards, visitors, parking) and FasTag toll recharge.

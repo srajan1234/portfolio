@@ -2,6 +2,12 @@
 
 **A microservices influencer-marketing marketplace connecting Indian brands with creators — with escrow-protected content that stays watermarked until the brand pays.**
 
+## Demo
+
+[![Watch the InfluenceHub demo walkthrough](../../docs/media/influencehub.jpg)](https://srajan1234.github.io/portfolio/media/influencehub.mp4)
+
+*Click to watch the walkthrough video (about a minute). It is recreated from the application's source with sample data.*
+
 ## Overview
 
 InfluenceHub is a full-stack marketplace where brands run marketing campaigns and

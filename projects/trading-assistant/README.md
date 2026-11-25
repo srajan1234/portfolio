@@ -2,6 +2,12 @@
 
 > A real-time, browser-based trading assistant for the Indian equity/derivatives market (NSE) — intraday options and BTST (Buy Today, Sell Tomorrow) strategies, powered by a Node.js data-proxy backend and a shared technical-analysis engine.
 
+## Demo
+
+[![Watch the Trading Assistant demo walkthrough](../../docs/media/trading-assistant.jpg)](https://srajan1234.github.io/portfolio/media/trading-assistant.mp4)
+
+*Click to watch the walkthrough video (about a minute). It is recreated from the application's source with sample data.*
+
 ## Overview
 
 Trading Assistant is a full-stack decision-support dashboard for NSE traders. It streams live prices for **NIFTY 50**, **BANK NIFTY**, **SENSEX**, and **INDIA VIX**, scans ~20 large-cap NSE stocks, computes a battery of technical indicators, pulls live option chains, and surfaces actionable buy/sell signals with entry, target, and stop-loss levels — all refreshed on a short interval.
